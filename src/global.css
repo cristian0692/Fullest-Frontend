@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+    --color-primary: #E68F3D;
+    --color-background: #3F474C;
+    --color-secondary: #1bbbf5;
+    --color-dark: #21292B;
+
+    --font-helvetica: "helvetica-lt-pro";
+
+    --text-tiny: 0.666rem;
+    --text-normal: 1rem;
+    --text-medium: 1.666rem;
+    --text-large: 3rem;
+
+    --breakpoint-lg: 73.125rem;
+    --breakpoint-md: 61.25rem;
+    --breakpoint-sm: 49.125rem;
+
+
+
+
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #3F474C;
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #E68F3D;
+}
+.remove-scrolling {
+    height: 100%;
+    overflow: hidden;
+}
