@@ -5,8 +5,12 @@ import { EVENT_GROUP_NAMES } from "!/data/globalData.ts";
 import { useEffect } from "react";
 import { InsertionType, useDrag } from "../../Hooks/DragProvider.tsx";
 
+const PLACEHOLDER_DURATION = 15;
+const MAX_PlACEHOLDERS = 24 * (60 / PLACEHOLDER_DURATION);
+const BAR_EVENTS_NAME = EVENT_GROUP_NAMES.barContent;
+
 const findUniquePlaceholder = (barEvents: string[]) => {
-  for (let i = 0; i < 100; i++) { //100 placeholders because a day has max 24 hours and a placeholder is 15 min
+  for (let i = 0; i < MAX_PlACEHOLDERS; i++) {
     const placeholder = "placeholder-" + i;
     if (!barEvents.includes(placeholder)) {
       return placeholder;
@@ -14,45 +18,47 @@ const findUniquePlaceholder = (barEvents: string[]) => {
   }
   throw new Error("too many placeholders!");
 };
+export const removeLastPlaceHolder = (barEvents: string[]) => {
+  const newBarEvents = [...barEvents];
+  let j = newBarEvents.length - 1;
+  while (j >= 0) {
+    const currentEvent = newBarEvents[j];
+    if (currentEvent.includes("placeholder")) {
+      newBarEvents.splice(j, 1);
+      break;
+    } else {
+      j -= 1;
+    }
+  }
+  return newBarEvents;
+};
+
+export const addMissingPlaceholders = (
+  barEvents: string[],
+  quantityMoved: number,
+) => {
+  const newBarEvents: string[] = [...barEvents];
+
+  for (let i = 0; i < quantityMoved / 15; i++) {
+    newBarEvents.push(findUniquePlaceholder(newBarEvents));
+  }
+  return newBarEvents;
+};
 
 const BarEvents = () => {
   const { eventGroups, setEventGroups } = useEvent();
   const { inserted, setInserted, quantityMoved } = useDrag();
   const { remainingTime } = useTime();
   const localEventsName = EVENT_GROUP_NAMES.localEvents;
-  const barEventsName = EVENT_GROUP_NAMES.barContent;
 
-  const barEvents: string[] = eventGroups[barEventsName];
-  const addMissingPlaceholders = () => {
-    const newBarEvents: string[] = [...barEvents];
+  const barEvents: string[] = eventGroups[BAR_EVENTS_NAME];
 
-    for (let i = 0; i < quantityMoved / 15; i++) {
-      newBarEvents.push(findUniquePlaceholder(newBarEvents));
-    }
-    setEventGroups((prev) => {
-      return { ...prev, [barEventsName]: newBarEvents };
-    });
-  };
-
-  const removeLastPlaceHolder = (newBarEvents: string[]) => {
-    let j = newBarEvents.length - 1;
-    while (j >= 0) {
-      const currentEvent = newBarEvents[j];
-      if (currentEvent.includes("placeholder")) {
-        newBarEvents.splice(j, 1);
-        break;
-      } else {
-        j -= 1;
-      }
-    }
-
-    return newBarEvents;
-  };
   const fillEmptyBarWithPlaceholders = () => {
     let newBarEvents: string[] = barEvents;
     const placeholderTotalTime = barEvents.reduce((acc, currentValue) => {
-      if (currentValue.includes("placeholder")) return acc + 15;
-      else return acc;
+      if (currentValue.includes("placeholder")) {
+        return acc + PLACEHOLDER_DURATION;
+      } else return acc;
     }, 0);
 
     if (remainingTime >= placeholderTotalTime) {
@@ -85,35 +91,9 @@ const BarEvents = () => {
     });
   };
   useEffect(() => {
-    // setCustomEvents([{
-    //   color: "bg-amber-500",
-    //   description: "",
-    //   duration: makeTodayWithTime(3, 0),
-    //   id: "401",
-    //   title: "Gym",
-    // }, {
-    //   color: "bg-green-500",
-    //   description: "",
-    //   duration: makeTodayWithTime(1, 30),
-    //   id: "378",
-    //   title: "Work",
-    // }, {
-    //   color: "bg-primary",
-    //   description: "",
-    //   duration: makeTodayWithTime(1, 0),
-    //   id: "490",
-    //   title: "Cleaning",
-    // }, {
-    //   color: "bg-secondary",
-    //   description: "",
-    //   duration: makeTodayWithTime(2, 0),
-    //   id: "361",
-    //   title: "Rest",
-    // }]);
-
     setEventGroups({
       [EVENT_GROUP_NAMES.barContent]: [],
-      [localEventsName]: [/* 361", "378", "401", "490"*/],
+      [localEventsName]: [],
     });
   }, []);
   useEffect(() => {
@@ -134,7 +114,13 @@ const BarEvents = () => {
 
         break;
       case InsertionType.out:
-        addMissingPlaceholders();
+        setEventGroups((prev) => {
+          return {
+            ...prev,
+            [BAR_EVENTS_NAME]: addMissingPlaceholders(barEvents, quantityMoved),
+          };
+        });
+
         setInserted(null);
         break;
     }

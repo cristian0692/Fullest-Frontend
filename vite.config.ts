@@ -10,9 +10,9 @@ export default defineConfig({
     alias: [
       {
         find: "@",
-        replacement: resolve(__dirname, "./FullestFrontEnd/src/components/"),
+        replacement: resolve(__dirname, "./FullestFrontEnd/main/src/components/"),
       },
-      { find: "!", replacement: resolve(__dirname, "./FullestFrontEnd/src/") },
+      { find: "!", replacement: resolve(__dirname, "./FullestFrontEnd/main/src/") },
       { find: "?/", replacement: resolve(__dirname, "./Shared/") },
     ],
   },

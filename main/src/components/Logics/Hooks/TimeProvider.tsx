@@ -52,7 +52,7 @@ const TimeContext = createContext<TimeContextType | null>(null);
 
 // 3. Provider component
 export const TimeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [wakeTime, setWakeTime] = useState(() => makeTodayWithTime(20, 0));
+  const [wakeTime, setWakeTime] = useState(() => makeTodayWithTime(18, 0));
   const [sleepTime, setSleepTime] = useState(() => makeTodayWithTime(22, 0));
   const [timeSegments, setTimeSegments] = useState(0);
   const [remainingTime, setRemainingTime] = useState(NaN);

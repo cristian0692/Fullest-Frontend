@@ -46,6 +46,7 @@ const SortableEvent = (
       <li
         style={style}
         className="h-full bg-background border-1 border-black"
+        id={eventId}
         ref={setNodeRef}
         {...attributes}
         {...listeners}

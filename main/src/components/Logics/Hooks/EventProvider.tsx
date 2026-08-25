@@ -22,7 +22,7 @@ type EventContextType = {
 };
 
 // 2. Create the context
-const EventContext = createContext<EventContextType | null>(null);
+export const EventContext = createContext<EventContextType | null>(null);
 // 3. Provider component
 export const EventProvider = ({ children }: { children: React.ReactNode }) => {
   const [title, setTitle] = useState("");

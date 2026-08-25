@@ -3,14 +3,16 @@
       "dev": "deno run -A npm:vite & deno run server:start",
       "build": "deno run -A npm:vite build",
       "server:start": "deno run --watch --allow-env --allow-net --allow-read --env-file ../FullestBackEnd/src/main.ts",
-      "serve": "deno run build && deno run server:start"
+      "serve": "deno run build && deno run server:start",
+      "test": "test --allow-all"
   },
   "nodeModulesDir": "auto",
   "compilerOptions": {
       "types": [
           "react",
           "react-dom",
-          "@types/react"
+          "@types/react",
+          "vite/client"
       ],
       "lib": [
           "dom",
@@ -21,13 +23,22 @@
       "jsxImportSource": "react"
   },
   "imports": {
-    "@/": "./src/components/",
-    "!/": "./src/",       
+    "@/": "./main/src/components/",
+    "!/": "./main/src/",       
     "?/": "../Shared/",
     "@std/assert": "jsr:@std/assert@^1.0.19",
     "react": "npm:react@^19.1.1",
+    "@types/react": "npm:@types/react@^19.0.0",
+    "react-dom": "npm:react-dom@^19",
+    "@testing-library/react": "npm:@testing-library/react@^16",
+    "@std/expect": "jsr:@std/expect@^1",
+    "happy-dom": "npm:happy-dom@^17",
     "@dnd-kit": "npm:@dnd-kit",
     "@oak/oak": "jsr:@oak/oak@^17.1.6",
     "@tajpouria/cors": "jsr:@tajpouria/cors@^1.2.1"
+  },
+  "allowScripts": {
+    "allow": [],
+    "deny": ["npm:@tailwindcss/oxide@4.1.14", "npm:esbuild@0.18.20", "npm:esbuild@0.25.10", "npm:unrs-resolver@1.12.2"]
   }
 }
