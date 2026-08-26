@@ -3,13 +3,13 @@ import TimeInput from "@/Logics/Inputs/TimeInput.tsx";
 import Heading from "@/Designs/PlanDayPage/Heading.tsx";
 import ColorPicker from "@/Logics/ColorPicker/ColorPicker.tsx";
 import { useEvent } from "@/Logics/Hooks/EventProvider.tsx";
-import type { DayEvent } from "?/types.ts";
 import { makeTodayWithTime } from "@/Logics/Hooks/TimeProvider.tsx";
 import EventList from "@/Logics/PlanDayPage/EventList.tsx";
 import { useState } from "react";
 import { useDrag } from "@/Logics/Hooks/DragProvider.tsx";
 import { v4 as uuidv4 } from "uuid";
 import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
+import { DayEvent } from "!/domain/model/DayEvent.ts";
 type Props = {
   onPrevious: () => void;
   onNext: () => void;
@@ -42,21 +42,20 @@ const WriteEventsStep = ({ onPrevious, onNext }: Props) => {
       setTitleError("Title is required");
       return;
     }
-    const event: DayEvent = {
-      id: uuidv4(),
-      color,
+    const newEvent = new DayEvent(
+      uuidv4(),
+      title,
       description,
+      color,
       duration,
-      title, // use the current values BEFORE clearing
-    };
-    setCustomEvents((prev) => [...prev, event]);
+    ); // use the current values BEFORE clearing
+    setCustomEvents((prev) => [...prev, newEvent]);
 
     setEventGroups((prev) => {
-      const newEventId = event.id;
       const currentWowEvents = prev[name] || [];
       return {
         ...prev,
-        [name]: [...currentWowEvents, newEventId],
+        [name]: [...currentWowEvents, newEvent.toDragDayEvent()],
       };
     });
     setDescription("");

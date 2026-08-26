@@ -1,4 +1,4 @@
-import type { DayEvent } from "?/types.ts";
+import { DayEvent } from "!/domain/model/DayEvent.ts";
 
 type Props = {
   customEvent: DayEvent;
@@ -17,11 +17,11 @@ const CustomEvent = (
   return (
     <div
       style={style}
-      className={`${customEvent.color} h-full flex items-center p-2 text-white justify-center ${
+      className={`${customEvent.GetColor()} h-full flex items-center p-2 text-white justify-center ${
         first ? "rounded-l-full" : "rounded-l-none"
       } ${last ? "rounded-r-full" : "rounded-r-none"}`}
     >
-      {customEvent.title}
+      {customEvent.getTitle()}
     </div>
   );
 };

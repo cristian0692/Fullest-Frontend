@@ -60,7 +60,7 @@ const SortableEvent = (
   }
 
   const eventWidth = `${
-    getTimeMinutes(currentEvent.duration) * pixelsPer15Minutes / 15
+    getTimeMinutes(currentEvent.getDuration()) * pixelsPer15Minutes / 15
   }px`;
   style.width = eventWidth;
   return (

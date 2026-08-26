@@ -5,7 +5,6 @@ import { AppProvider } from "@/Logics/Hooks/AppProvider.tsx";
 import BarEvents from "@/Logics/PlanDayPage/Bar/BarEvents.tsx";
 import RemainingTime from "@/Logics/PlanDayPage/Bar/RemainingTime.tsx";
 import CustomEvent from "@/Logics/PlanDayPage/CustomEvent.tsx";
-import { DayEvent } from "?/types.ts";
 import { createEvent } from "./testHelper.tsx";
 
 Deno.test("renders 16 placeholders by default", () => {
@@ -50,5 +49,6 @@ Deno.test("adds an event to the bar, removes excess placeholders", () => {
 
   expect(barEvent).not.toBeNull();
   expect(placeholders).toBe(16 - duration.getHours() * 4);
+
 
 });

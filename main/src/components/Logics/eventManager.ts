@@ -1,4 +1,4 @@
-import { DragDayEvent } from "?/types.ts";
+import { DragDayEvent } from "!/domain/viewModels/DragDayEvent.ts";
 
 export const placeEventInContainer = (
   allEventContainers: Record<string, DragDayEvent[]>,

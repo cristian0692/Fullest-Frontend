@@ -1,6 +1,8 @@
 import { createContext, useContext, useState } from "react";
 import { makeTodayWithTime } from "@/Logics/Hooks/TimeProvider.tsx";
-import type { Color, DayEvent, DragDayEvent } from "?/types.ts";
+import { Color } from "!/domain/model/enums/Color.ts";
+import { DayEvent } from "!/domain/model/DayEvent.ts";
+import { DragDayEvent } from "!/domain/viewModels/DragDayEvent.ts";
 
 // 1. Define the context type
 type EventContextType = {

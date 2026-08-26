@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
-import type { Coordinate, DayEvent } from "?/types.ts";
+import { Coordinate } from "!/domain/model/Coordintate.ts";
+import { DayEvent } from "!/domain/model/DayEvent.ts";
 // 1. Define the context type
 type DragContextType = {
   barPosition: Coordinate;

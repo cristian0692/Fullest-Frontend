@@ -5,13 +5,13 @@ export class DragDayEvent {
     id: string,
     title: string,
     color: Color,
-    durationInHours: number,
-    startingTime: Date,
+    durationInMinutes: number,
+    startingTime?: Date,
   ) {
     this.#id = id;
     this.#title = title;
     this.#color = color;
-    this.#durationInHours = durationInHours;
+    this.#durationInMinutes = durationInMinutes;
     this.#startingTime = startingTime;
   }
 
@@ -19,10 +19,12 @@ export class DragDayEvent {
     return this.#id;
   }
 
+  getDuration() {
+    return this.#durationInMinutes;
+  }
   #id: string;
   #title: string;
   #color: string;
-  #durationInHours: number;
-  #startingTime: Date;
+  #durationInMinutes: number;
+  #startingTime: Date | undefined;
 }
-

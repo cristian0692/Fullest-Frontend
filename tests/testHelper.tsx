@@ -1,4 +1,5 @@
-import { Color, DayEvent } from "?/types.ts";
+import { Color } from "!/domain/model/enums/Color.ts";
+import { DayEvent } from "!/domain/model/DayEvent.ts";
 
 export const createEvent = (
   id: string,

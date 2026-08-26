@@ -7,7 +7,7 @@ export class RenderedBarContainer {
 
   #items: (BarPlaceholder | DragDayEvent)[];
   constructor(events: DragDayEvent[]) {
-    this.#items = events;
+    this.#items = events ?? [];
   }
 
   insertUniquePlaceHolder() {
@@ -55,8 +55,7 @@ export class RenderedBarContainer {
   fillEmptyBarWithPlaceholders(
     remainingTime: number,
   ) {
-    const newRenderedBarContainer = [...this.#items];
-    const placeholderTotalTime = newRenderedBarContainer.reduce(
+    const placeholderTotalTime = this.#items.reduce(
       (acc, currentValue) => {
         if (currentValue instanceof BarPlaceholder) {
           return acc + RenderedBarContainer.PLACEHOLDER_DURATION;
@@ -67,17 +66,15 @@ export class RenderedBarContainer {
 
     if (remainingTime >= placeholderTotalTime) {
       for (let i = 0; i < (remainingTime - placeholderTotalTime) / 15; i++) {
-        newRenderedBarContainer.push(
+        this.#items.push(
           this.insertUniquePlaceHolder(),
-        ); // push at the end
+        );
       }
     } else {
       for (let i = 0; i < (placeholderTotalTime - remainingTime) / 15; i++) {
         this.removeLastPlaceHolder();
       }
     }
-
-    this.#items = newRenderedBarContainer;
   }
 
   removeExtraPlaceholders(
@@ -91,11 +88,9 @@ export class RenderedBarContainer {
     for (let i = 0; i < quantityMoved / 15; i++) {
       this.removeLastPlaceHolder();
     }
-
   }
 
-
-  getItems(){
+  getItems() {
     return this.#items;
   }
 }

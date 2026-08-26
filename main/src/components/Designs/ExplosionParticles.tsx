@@ -1,5 +1,5 @@
-import explodeParticle1 from "../../assets/explosionParticle1.png";
-import explodeParticle2 from "../../assets/explosionParticle2.png";
+import explodeParticle1 from "../../resources/assets/explosionParticle1.png";
+import explodeParticle2 from "../../resources/assets/explosionParticle2.png";
 
 type Props = {
   particle1: React.RefObject<null>;

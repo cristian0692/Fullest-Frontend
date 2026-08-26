@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 
 // helper to create today's date with specific time
-export const makeTodayWithTime = (hours: number, minutes: number) => {
+export const  makeTodayWithTime = (hours: number, minutes: number) => {
   const d = new Date();
   d.setHours(hours, minutes, 0, 0);
   return d;

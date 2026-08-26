@@ -1,5 +1,5 @@
 import { IoIosCheckmark } from "react-icons/io";
-import type { Color } from "?/types.ts";
+import { Color } from "!/domain/model/enums/Color.ts";
 
 type Props = {
   color: Color;

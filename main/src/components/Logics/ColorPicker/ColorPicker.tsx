@@ -1,4 +1,4 @@
-import { COLORS, type Color } from "?/types.ts";
+import { Color, COLORS } from "!/domain/model/enums/Color.ts";
 import ColorCell from "./ColorCell.tsx";
 type Props = {
   onSelect: (color: Color) => void;

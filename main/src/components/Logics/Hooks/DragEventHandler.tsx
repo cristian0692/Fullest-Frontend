@@ -24,7 +24,8 @@ import { findEventById } from "!/utils/events.ts";
 import { InsertionType, useDrag } from "./DragProvider.tsx";
 import { EVENT_CONTAINER_NAMES } from "../../../data/globalData.ts";
 import { getTimeMinutes, useTime } from "./TimeProvider.tsx";
-import type { DayEvent } from "?/types.ts";
+import { DayEvent } from "!/domain/model/DayEvent.ts";
+import { DragDayEvent } from "!/domain/viewModels/DragDayEvent.ts";
 
 type Props = {
   children: ReactNode;
@@ -74,7 +75,7 @@ const DragEventHandler = ({ children }: Props) => {
     if (activeContainer !== overContainer) {
       const currentEvent = findEventById(
         customEvents,
-        eventGroups[activeContainer][activeIndex],
+        eventGroups[activeContainer][activeIndex].getId(),
       );
       if (
         !currentEvent ||
@@ -91,12 +92,12 @@ const DragEventHandler = ({ children }: Props) => {
             activeIndex,
             overContainer,
             overIndex,
-            item: active.id.toString(),
+            item: currentEvent.toDragDayEvent(),
           },
         );
       });
       if (currentEvent) {
-        setQuantityMoved(getTimeMinutes(currentEvent.duration));
+        setQuantityMoved(getTimeMinutes(currentEvent.getDuration()));
         setLastMove({
           out: activeContainer,
           in: overContainer,
@@ -139,12 +140,12 @@ const DragEventHandler = ({ children }: Props) => {
   };
 
   type Props = {
-    items: Record<string, string[]>;
+    items: Record<string, DragDayEvent[]>;
     activeContainer: string;
     activeIndex: number;
     overContainer: string;
     overIndex: number;
-    item: string;
+    item: DragDayEvent;
   };
   const moveBetweenContainers = (
     { items, activeContainer, activeIndex, overContainer, overIndex, item }:
@@ -178,7 +179,7 @@ const DragEventHandler = ({ children }: Props) => {
   };
 
   const isRemainingTimeValid = (newEvent: DayEvent) => {
-    return remainingTime - getTimeMinutes(newEvent.duration) >= 0;
+    return remainingTime - getTimeMinutes(newEvent.getDuration()) >= 0;
   };
   return (
     <DndContext

@@ -1,29 +1,24 @@
 import { useEvent } from "@/Logics/Hooks/EventProvider.tsx";
 import {
   calculateTimeInterval,
-  getTimeMinutes,
   makeTodayWithTime,
   useTime,
 } from "@/Logics/Hooks/TimeProvider.tsx";
-import { findEventById } from "!/utils/events.ts";
 import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
-import type { DayEvent } from "?/types.ts";
 import { useEffect, useState } from "react";
+import { DragDayEvent } from "!/domain/viewModels/DragDayEvent.ts";
 
-const calculateRemainingTime = (group: string[], events: DayEvent[]) => {
-  return group.reduce<number>((acc, eventId) => {
-    const customEvent = findEventById(events, eventId);
-    if (!customEvent) {
-      return acc;
-    }
-    acc += getTimeMinutes(customEvent.duration);
-    return acc;
+const calculateTotalEventTime = (
+  barEvents: DragDayEvent[],
+) => {
+  return barEvents.reduce<number>((acc, barEvent) => {
+    return acc + barEvent.getDuration();
   }, 0);
 };
 
 const RemainingTime = () => {
   const { wakeTime, sleepTime, setRemainingTime } = useTime();
-  const { eventContainers: eventGroups, dayEvents: customEvents } = useEvent();
+  const { eventContainers: eventGroups } = useEvent();
   const [isDisplayError, setIsDisplayError] = useState(false);
   const [remainingTotalTime, setRemainingTotalTime] = useState("00:00"); //the text that is displayed
   const { isError, date: totalDayTime } = calculateTimeInterval(
@@ -33,23 +28,21 @@ const RemainingTime = () => {
   const name = EVENT_CONTAINER_NAMES["barContent"];
 
   useEffect(() => {
-    if (eventGroups[name]) {
-      const totalMinutes = calculateRemainingTime(
-        eventGroups[name],
-        customEvents,
-      );
-      const totalHours = Math.floor(totalMinutes / 60);
-      const remainingMinutes = totalMinutes % 60;
-      const totalTime: Date = makeTodayWithTime(totalHours, remainingMinutes);
+    const totalMinutes = calculateTotalEventTime(
+      eventGroups[name] ?? [],
+    );
+    const totalHours = Math.floor(totalMinutes / 60);
+    const remainingMinutes = totalMinutes % 60;
+    const totalTime: Date = makeTodayWithTime(totalHours, remainingMinutes);
 
-      const result = calculateTimeInterval(
-        totalTime,
-        totalDayTime,
-      );
-      setRemainingTotalTime(result.text);
-      setIsDisplayError(isError || result.isError);
-      setRemainingTime(result.totalMinutes);
-    }
+    const result = calculateTimeInterval(
+      totalTime,
+      totalDayTime,
+    );
+    setRemainingTotalTime(result.text);
+    setIsDisplayError(isError || result.isError);
+    setRemainingTime(result.totalMinutes);
+
   }, [eventGroups[name], wakeTime, sleepTime]);
   return (
     <div

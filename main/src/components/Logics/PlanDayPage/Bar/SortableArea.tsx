@@ -5,7 +5,8 @@ import {
 } from "@dnd-kit/sortable";
 
 import SortableEvent from "../SortableEvent.tsx";
-import { BarPlaceholder, DragDayEvent } from "?/types.ts";
+import { BarPlaceholder } from "!/domain/model/BarPlaceHolder.ts";
+import { DragDayEvent } from "!/domain/viewModels/DragDayEvent.ts";
 
 type Props = {
   id: string;
@@ -25,7 +26,7 @@ const SortableContainer = (
   return (
     <SortableContext
       id={id}
-      items={items}
+      items={items.map(i => i.getId())}
       strategy={horizontalListSortingStrategy}
     >
       <ul
@@ -35,8 +36,8 @@ const SortableContainer = (
         {items.map((item, i) => {
           return (
             <SortableEvent
-              key={item.id}
-              eventId={item.id}
+              key={item.getId()}
+              eventId={item.getId()}
               first={i == 0 && rounded}
               last={i == items.length - 1 && rounded}
             />

@@ -1,4 +1,6 @@
 import { Color } from "!/domain/model/enums/Color.ts";
+import { DragDayEvent } from "!/domain/viewModels/DragDayEvent.ts";
+import { getTimeMinutes } from "@/Logics/Hooks/TimeProvider.tsx";
 
 export class DayEvent {
   constructor(
@@ -19,6 +21,30 @@ export class DayEvent {
     return this.#id;
   }
 
+  getDuration() {
+    return this.#duration;
+  }
+
+  GetColor() {
+    return this.#color;
+  }
+
+  getTitle() {
+    return this.#title;
+  }
+  getDescription() {
+    return this.#description;
+  }
+
+  toDragDayEvent(startTime?: Date) {
+    return new DragDayEvent(
+      this.#id,
+      this.#title,
+      this.#color,
+      getTimeMinutes(this.#duration),
+      startTime,
+    );
+  }
   #id: string;
   #title: string;
   #description: string;
