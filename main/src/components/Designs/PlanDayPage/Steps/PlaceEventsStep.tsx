@@ -3,18 +3,18 @@ import { useEvent } from "@/Logics/Hooks/EventProvider.tsx";
 import Heading from "@/Designs/PlanDayPage/Heading.tsx";
 import StepsTemplate from "@/Designs/PlanDayPage/Steps/StepsTemplate.tsx";
 import { useDrag } from "@/Logics/Hooks/DragProvider.tsx";
-import { EVENT_GROUP_NAMES } from "!/data/globalData.ts";
-import SortableArea from "../../../Logics/PlanDayPage/Bar/SortableArea.tsx";
+import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
+import SortableContainer from "../../../Logics/PlanDayPage/Bar/SortableArea.tsx";
 
 type Props = {
   onPrevious: () => void;
   onComplete: () => void;
 };
 const PlaceEventsStep = ({ onComplete, onPrevious }: Props) => {
-  const { eventGroups } = useEvent();
+  const { eventContainers: eventGroups } = useEvent();
   const { setIsDraggable } = useDrag();
 
-  const name = EVENT_GROUP_NAMES["localEvents"];
+  const name = EVENT_CONTAINER_NAMES["localEvents"];
 
   const localEvents = eventGroups[name] ? eventGroups[name] : [];
 
@@ -26,7 +26,7 @@ const PlaceEventsStep = ({ onComplete, onPrevious }: Props) => {
       />
       <div className="flex gap-5 h-auto items-center justify-end">
         <div className="overflow-x-scroll h-40 flex min-w-40">
-          <SortableArea
+          <SortableContainer
             id={name}
             items={localEvents}
             extraStyling={"gap-4 flex-nowrap " +

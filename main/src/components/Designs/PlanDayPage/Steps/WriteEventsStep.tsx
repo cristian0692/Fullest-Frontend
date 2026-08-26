@@ -9,7 +9,7 @@ import EventList from "@/Logics/PlanDayPage/EventList.tsx";
 import { useState } from "react";
 import { useDrag } from "@/Logics/Hooks/DragProvider.tsx";
 import { v4 as uuidv4 } from "uuid";
-import { EVENT_GROUP_NAMES } from "!/data/globalData.ts";
+import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
 type Props = {
   onPrevious: () => void;
   onNext: () => void;
@@ -24,15 +24,15 @@ const WriteEventsStep = ({ onPrevious, onNext }: Props) => {
     setTitle,
     duration,
     setDuration,
-    setCustomEvents,
-    setEventGroups,
-    eventGroups,
-    customEvents,
+    setDayEvents: setCustomEvents,
+    setEventContainers: setEventGroups,
+    eventContainers: eventGroups,
+    dayEvents: customEvents,
   } = useEvent();
 
   const [showEvents, setShowEvents] = useState(false);
   const { setIsDraggable } = useDrag();
-  const name = EVENT_GROUP_NAMES["localEvents"];
+  const name = EVENT_CONTAINER_NAMES["localEvents"];
 
   const [titleError, setTitleError] = useState("");
   const localEvents = eventGroups[name] ? eventGroups[name] : [];

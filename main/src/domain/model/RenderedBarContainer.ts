@@ -1,0 +1,101 @@
+import { BarPlaceholder } from "!/domain/model/BarPlaceHolder.ts";
+import { DragDayEvent } from "!/domain/viewModels/DragDayEvent.ts";
+
+export class RenderedBarContainer {
+  static PLACEHOLDER_DURATION = 15;
+  static MAX_PlACEHOLDERS = 24 * (60 / this.PLACEHOLDER_DURATION);
+
+  #items: (BarPlaceholder | DragDayEvent)[];
+  constructor(events: DragDayEvent[]) {
+    this.#items = events;
+  }
+
+  insertUniquePlaceHolder() {
+    for (let i = 0; i < RenderedBarContainer.MAX_PlACEHOLDERS; i++) {
+      const id = "placeholder-" + i;
+      if (!this.getAllPlaceHoldersId(this.#items).includes(id)) {
+        return new BarPlaceholder(id);
+      }
+    }
+    throw new Error("too many placeholders!");
+  }
+
+  getAllPlaceHoldersId(renderedContainer: (BarPlaceholder | DragDayEvent)[]) {
+    return renderedContainer
+      .filter((barEvent) => barEvent instanceof BarPlaceholder)
+      .map((barEvent) => barEvent.getId());
+  }
+
+  removeLastPlaceHolder() {
+    const newRenderedContainer = [...this.#items];
+    let j = newRenderedContainer.length - 1;
+    while (j >= 0) {
+      const currentEvent = newRenderedContainer[j];
+      if (currentEvent instanceof BarPlaceholder) {
+        newRenderedContainer.splice(j, 1);
+        break;
+      } else {
+        j -= 1;
+      }
+    }
+    this.#items = newRenderedContainer;
+  }
+
+  addMissingPlaceholders(
+    minutesRemoved: number,
+  ) {
+    const newRenderedContainer = [...this.#items];
+
+    for (let i = 0; i < minutesRemoved / 15; i++) {
+      newRenderedContainer.push(this.insertUniquePlaceHolder());
+    }
+    this.#items = newRenderedContainer;
+  }
+
+  fillEmptyBarWithPlaceholders(
+    remainingTime: number,
+  ) {
+    const newRenderedBarContainer = [...this.#items];
+    const placeholderTotalTime = newRenderedBarContainer.reduce(
+      (acc, currentValue) => {
+        if (currentValue instanceof BarPlaceholder) {
+          return acc + RenderedBarContainer.PLACEHOLDER_DURATION;
+        } else return acc;
+      },
+      0,
+    );
+
+    if (remainingTime >= placeholderTotalTime) {
+      for (let i = 0; i < (remainingTime - placeholderTotalTime) / 15; i++) {
+        newRenderedBarContainer.push(
+          this.insertUniquePlaceHolder(),
+        ); // push at the end
+      }
+    } else {
+      for (let i = 0; i < (placeholderTotalTime - remainingTime) / 15; i++) {
+        this.removeLastPlaceHolder();
+      }
+    }
+
+    this.#items = newRenderedBarContainer;
+  }
+
+  removeExtraPlaceholders(
+    quantityMoved: number,
+    remainingTime: number,
+  ) {
+    if (remainingTime < 0) {
+      console.log("Not enough Time!");
+      return [];
+    }
+    for (let i = 0; i < quantityMoved / 15; i++) {
+      this.removeLastPlaceHolder();
+    }
+
+  }
+
+
+  getItems(){
+    return this.#items;
+  }
+}

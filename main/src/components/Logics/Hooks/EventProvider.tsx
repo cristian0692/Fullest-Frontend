@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { makeTodayWithTime } from "@/Logics/Hooks/TimeProvider.tsx";
-import type { Color, DayEvent } from "?/types.ts";
+import type { Color, DayEvent, DragDayEvent } from "?/types.ts";
 
 // 1. Define the context type
 type EventContextType = {
@@ -13,11 +13,11 @@ type EventContextType = {
   color: Color;
   setColor: React.Dispatch<React.SetStateAction<Color>>;
 
-  customEvents: DayEvent[];
-  setCustomEvents: React.Dispatch<React.SetStateAction<DayEvent[]>>;
-  eventGroups: Record<string, string[]>;
-  setEventGroups: React.Dispatch<
-    React.SetStateAction<Record<string, string[]>>
+  dayEvents: DayEvent[];
+  setDayEvents: React.Dispatch<React.SetStateAction<DayEvent[]>>;
+  eventContainers: Record<string, DragDayEvent[]>;
+  setEventContainers: React.Dispatch<
+    React.SetStateAction<Record<string, DragDayEvent[]>>
   >;
 };
 
@@ -30,7 +30,7 @@ export const EventProvider = ({ children }: { children: React.ReactNode }) => {
   const [color, setColor] = useState<Color>("bg-secondary");
   const [duration, setDuration] = useState(makeTodayWithTime(1, 0));
   const [customEvents, setCustomEvents] = useState<DayEvent[]>([]);
-  const [eventGroups, setEventGroups] = useState<Record<string, string[]>>({});
+  const [eventContainers, setEventContainers] = useState<Record<string, DragDayEvent[]>>({});
 
   return (
     <EventContext.Provider
@@ -43,10 +43,10 @@ export const EventProvider = ({ children }: { children: React.ReactNode }) => {
         setDuration,
         color,
         setColor,
-        customEvents,
-        setCustomEvents,
-        eventGroups,
-        setEventGroups,
+        dayEvents: customEvents,
+        setDayEvents: setCustomEvents,
+        eventContainers,
+        setEventContainers,
       }}
     >
       {children}

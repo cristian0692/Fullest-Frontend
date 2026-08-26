@@ -5,15 +5,16 @@ import {
 } from "@dnd-kit/sortable";
 
 import SortableEvent from "../SortableEvent.tsx";
+import { BarPlaceholder, DragDayEvent } from "?/types.ts";
 
 type Props = {
   id: string;
-  items: string[];
+  items: (BarPlaceholder | DragDayEvent)[];
   extraStyling?: string;
   rounded?: boolean;
 };
 
-const SortableArea = (
+const SortableContainer = (
   { id, items, extraStyling = "", rounded = false }: Props,
 ) => {
   const { setNodeRef } = useDroppable({ id });
@@ -34,8 +35,8 @@ const SortableArea = (
         {items.map((item, i) => {
           return (
             <SortableEvent
-              key={item}
-              eventId={item}
+              key={item.id}
+              eventId={item.id}
               first={i == 0 && rounded}
               last={i == items.length - 1 && rounded}
             />
@@ -46,4 +47,4 @@ const SortableArea = (
   );
 };
 
-export default SortableArea;
+export default SortableContainer;

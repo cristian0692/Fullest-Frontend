@@ -6,7 +6,7 @@ import {
   useTime,
 } from "@/Logics/Hooks/TimeProvider.tsx";
 import { findEventById } from "!/utils/events.ts";
-import { EVENT_GROUP_NAMES } from "!/data/globalData.ts";
+import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
 import type { DayEvent } from "?/types.ts";
 import { useEffect, useState } from "react";
 
@@ -23,14 +23,14 @@ const calculateRemainingTime = (group: string[], events: DayEvent[]) => {
 
 const RemainingTime = () => {
   const { wakeTime, sleepTime, setRemainingTime } = useTime();
-  const { eventGroups, customEvents } = useEvent();
+  const { eventContainers: eventGroups, dayEvents: customEvents } = useEvent();
   const [isDisplayError, setIsDisplayError] = useState(false);
   const [remainingTotalTime, setRemainingTotalTime] = useState("00:00"); //the text that is displayed
   const { isError, date: totalDayTime } = calculateTimeInterval(
     wakeTime,
     sleepTime,
   );
-  const name = EVENT_GROUP_NAMES["barContent"];
+  const name = EVENT_CONTAINER_NAMES["barContent"];
 
   useEffect(() => {
     if (eventGroups[name]) {

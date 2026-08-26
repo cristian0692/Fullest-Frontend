@@ -22,7 +22,7 @@ import { arrayMove, insertAtIndex, removeAtIndex } from "!/utils/array.ts";
 import { useEvent } from "./EventProvider.tsx";
 import { findEventById } from "!/utils/events.ts";
 import { InsertionType, useDrag } from "./DragProvider.tsx";
-import { EVENT_GROUP_NAMES } from "../../../data/globalData.ts";
+import { EVENT_CONTAINER_NAMES } from "../../../data/globalData.ts";
 import { getTimeMinutes, useTime } from "./TimeProvider.tsx";
 import type { DayEvent } from "?/types.ts";
 
@@ -32,7 +32,7 @@ type Props = {
 
 const DragEventHandler = ({ children }: Props) => {
   const { activeEvent, setActiveEvent } = useDrag();
-  const { eventGroups, setEventGroups, customEvents } = useEvent();
+  const { eventContainers: eventGroups, setEventContainers: setEventGroups, dayEvents: customEvents } = useEvent();
   const { setInserted, setQuantityMoved } = useDrag();
   const { remainingTime } = useTime();
   const [lastMove, setLastMove] = useState<
@@ -79,7 +79,7 @@ const DragEventHandler = ({ children }: Props) => {
       if (
         !currentEvent ||
         (!isRemainingTimeValid(currentEvent) &&
-          overContainer == EVENT_GROUP_NAMES.barContent)
+          overContainer == EVENT_CONTAINER_NAMES.barContent)
       ) {
         return;
       }
@@ -158,7 +158,7 @@ const DragEventHandler = ({ children }: Props) => {
   };
 
   const calculateInsertionType = (inContainer: string) => {
-    const barContainerName = EVENT_GROUP_NAMES.barContent;
+    const barContainerName = EVENT_CONTAINER_NAMES.barContent;
     const items = eventGroups[barContainerName];
     if (!items) {
       console.error("contents of the bar not found!");

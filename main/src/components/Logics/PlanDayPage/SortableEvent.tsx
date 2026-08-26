@@ -28,7 +28,7 @@ const SortableEvent = (
     isDragging,
   } = useSortable({ id: eventId, disabled: isPlaceholder });
 
-  const { customEvents } = useEvent();
+  const { dayEvents: customEvents } = useEvent();
   const { activeEvent } = useDrag();
   const { pixelsPer15Minutes } = useEventWidth();
   const currentEvent = findEventById(customEvents, eventId);

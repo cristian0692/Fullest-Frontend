@@ -7,7 +7,7 @@ import { animate } from "animejs";
 import { disableScroll, enableScroll } from "@/Logics/scrollManager.ts";
 import { useEventWidth } from "@/Logics/Hooks/EventWidthProvider.tsx";
 import { useEvent } from "@/Logics/Hooks/EventProvider.tsx";
-import { EVENT_GROUP_NAMES } from "!/data/globalData.ts";
+import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
 import { saveDay } from "../../../api/router.ts";
 import type { DayEvent } from "?/types.ts";
 import { useTime } from "../../Logics/Hooks/TimeProvider.tsx";
@@ -16,7 +16,7 @@ const PlanDayPage = () => {
   const [step, setStep] = useState(1);
   const { setBarWidth } = useEventWidth();
   const { wakeTime, sleepTime } = useTime();
-  const { eventGroups, customEvents } = useEvent();
+  const { eventContainers: eventGroups, dayEvents: customEvents } = useEvent();
   const [redirecting, setRedirecting] = useState(true);
   const bubbleRef = useRef<HTMLDivElement>(null);
   const duration = 1500;
@@ -70,7 +70,7 @@ const PlanDayPage = () => {
   };
 
   const handleComplete = () => {
-    const name = EVENT_GROUP_NAMES.barContent;
+    const name = EVENT_CONTAINER_NAMES.barContent;
 
     const eventIds = eventGroups[name];
 
