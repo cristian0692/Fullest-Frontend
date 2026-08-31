@@ -1,6 +1,8 @@
 import { createContext, useContext, useState } from "react";
 import { Coordinate } from "!/domain/model/Coordintate.ts";
 import { DayEvent } from "!/domain/model/DayEvent.ts";
+import { DragDayEvent } from "!/domain/viewModels/DragDayEvent.ts";
+import { BarPlaceholder } from "!/domain/model/BarPlaceHolder.ts";
 // 1. Define the context type
 type DragContextType = {
   barPosition: Coordinate;
@@ -13,6 +15,8 @@ type DragContextType = {
   setQuantityMoved: React.Dispatch<React.SetStateAction<number>>;
   inserted: InsertionType | null;
   setInserted: React.Dispatch<React.SetStateAction<InsertionType | null>>;
+  renderedBarItems: (DragDayEvent | BarPlaceholder)[] | null;
+  setRenderedBarItems: React.Dispatch<React.SetStateAction<(DragDayEvent | BarPlaceholder)[] | null>>;
 };
 
 export enum InsertionType {
@@ -27,6 +31,7 @@ const DragContext = createContext<DragContextType | null>(null);
 export const DragProvider = ({ children }: { children: React.ReactNode }) => {
   const [barPosition, setBarPosition] = useState<Coordinate>({ x: 0, y: 0 }); // absolute position of the bar
   const [activeEvent, setActiveEvent] = useState<DayEvent | null>(null);
+  const [renderedBarItems, setRenderedBarItems] = useState<(DragDayEvent | BarPlaceholder)[] | null>(null);
   const [isDraggable, setIsDraggable] = useState(false); // controls whether draggable objects can be dragged
   const [inserted, setInserted] = useState<InsertionType | null>(
     InsertionType.initialize,
@@ -44,7 +49,9 @@ export const DragProvider = ({ children }: { children: React.ReactNode }) => {
         inserted,
         setInserted,
         quantityMoved,
-        setQuantityMoved
+        setQuantityMoved,
+        renderedBarItems,
+        setRenderedBarItems,
       }}
     >
       {children}
@@ -55,6 +62,6 @@ export const DragProvider = ({ children }: { children: React.ReactNode }) => {
 // 4. Custom hook
 export const useDrag = () => {
   const ctx = useContext(DragContext);
-  if (!ctx) throw new Error("useTime must be used inside <TimeProvider>");
+  if (!ctx) throw new Error("useDrag must be used inside <DragProvider>");
   return ctx;
 };

@@ -24,9 +24,8 @@ const WriteEventsStep = ({ onPrevious, onNext }: Props) => {
     setTitle,
     duration,
     setDuration,
-    setDayEvents: setCustomEvents,
-    setEventContainers: setEventGroups,
-    eventContainers: eventGroups,
+    setDayEvents,
+    setEventContainers,
     dayEvents: customEvents,
   } = useEvent();
 
@@ -35,8 +34,6 @@ const WriteEventsStep = ({ onPrevious, onNext }: Props) => {
   const name = EVENT_CONTAINER_NAMES["localEvents"];
 
   const [titleError, setTitleError] = useState("");
-  const localEvents = eventGroups[name] ? eventGroups[name] : [];
-  const placedEvents = eventGroups["barEvents"] ? eventGroups["barEvents"] : [];
   const addCurrentEvent = () => {
     if (title == "") {
       setTitleError("Title is required");
@@ -49,9 +46,9 @@ const WriteEventsStep = ({ onPrevious, onNext }: Props) => {
       color,
       duration,
     ); // use the current values BEFORE clearing
-    setCustomEvents((prev) => [...prev, newEvent]);
+    setDayEvents((prev) => [...prev, newEvent]);
 
-    setEventGroups((prev) => {
+    setEventContainers((prev) => {
       const currentWowEvents = prev[name] || [];
       return {
         ...prev,
@@ -73,12 +70,13 @@ const WriteEventsStep = ({ onPrevious, onNext }: Props) => {
       <div className="flex gap-10 md:flex-row flex-col">
         <div className="flex flex-col gap-5">
           <div className="flex flex-col gap-2">
-            <div className="text-medium">
+            <label htmlFor="title" className="text-medium">
               Event Name<span className="text-primary">*</span>
-            </div>
+            </label>
             <input
               className="bg-background text-medium px-2 rounded-xl h-14"
               type="text"
+              id="title"
               maxLength={20}
               value={title}
               onChange={(e) => {
@@ -104,8 +102,9 @@ const WriteEventsStep = ({ onPrevious, onNext }: Props) => {
         </div>
 
         <div className="flex flex-col gap-2">
-          <div className="text-medium">Description</div>
+          <label htmlFor="description" className="text-medium">Description</label>
           <textarea
+            id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className="bg-background text-medium px-2 rounded-xl max-h-100 min-h-15"
@@ -122,6 +121,7 @@ const WriteEventsStep = ({ onPrevious, onNext }: Props) => {
           </div>
 
           <button
+          name="submit"
             type="button"
             onClick={addCurrentEvent}
             className="bg-secondary py-3 rounded-xl hover:cursor-pointer"
@@ -141,8 +141,8 @@ const WriteEventsStep = ({ onPrevious, onNext }: Props) => {
           {showEvents
             ? "Hide Events"
             : `See All Events (${
-              customEvents.length ? customEvents.length : 0
-            })`}
+                customEvents.length ? customEvents.length : 0
+              })`}
         </button>
         <div>
           <button

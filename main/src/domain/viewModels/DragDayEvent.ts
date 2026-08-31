@@ -18,7 +18,6 @@ export class DragDayEvent {
   getId() {
     return this.#id;
   }
-
   getDuration() {
     return this.#durationInMinutes;
   }

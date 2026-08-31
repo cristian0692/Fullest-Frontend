@@ -1,33 +1,34 @@
 import { BarPlaceholder } from "!/domain/model/BarPlaceHolder.ts";
 import { DragDayEvent } from "!/domain/viewModels/DragDayEvent.ts";
-
-export class RenderedBarContainer {
+import { DayEventContainer } from "!/domain/model/DayEventContainer.ts";
+export class RenderedBarContainer extends DayEventContainer<
+  BarPlaceholder | DragDayEvent
+> {
   static PLACEHOLDER_DURATION = 15;
   static MAX_PlACEHOLDERS = 24 * (60 / this.PLACEHOLDER_DURATION);
 
-  #items: (BarPlaceholder | DragDayEvent)[];
-  constructor(events: DragDayEvent[]) {
-    this.#items = events ?? [];
+  constructor(name: string, events?: DragDayEvent[]) {
+    super(name, events ?? []);
   }
 
   insertUniquePlaceHolder() {
     for (let i = 0; i < RenderedBarContainer.MAX_PlACEHOLDERS; i++) {
       const id = "placeholder-" + i;
-      if (!this.getAllPlaceHoldersId(this.#items).includes(id)) {
-        return new BarPlaceholder(id);
+      if (!this.getAllPlaceHoldersId().includes(id)) {
+        return new BarPlaceholder(i.toString());
       }
     }
     throw new Error("too many placeholders!");
   }
 
-  getAllPlaceHoldersId(renderedContainer: (BarPlaceholder | DragDayEvent)[]) {
-    return renderedContainer
+  getAllPlaceHoldersId() {
+    return this.items
       .filter((barEvent) => barEvent instanceof BarPlaceholder)
       .map((barEvent) => barEvent.getId());
   }
 
   removeLastPlaceHolder() {
-    const newRenderedContainer = [...this.#items];
+    const newRenderedContainer = [...this.items];
     let j = newRenderedContainer.length - 1;
     while (j >= 0) {
       const currentEvent = newRenderedContainer[j];
@@ -38,37 +39,28 @@ export class RenderedBarContainer {
         j -= 1;
       }
     }
-    this.#items = newRenderedContainer;
+    this.items = newRenderedContainer;
   }
 
-  addMissingPlaceholders(
-    minutesRemoved: number,
-  ) {
-    const newRenderedContainer = [...this.#items];
+  addMissingPlaceholders(minutesRemoved: number) {
+    const newRenderedContainer = [...this.items];
 
     for (let i = 0; i < minutesRemoved / 15; i++) {
       newRenderedContainer.push(this.insertUniquePlaceHolder());
     }
-    this.#items = newRenderedContainer;
+    this.items = newRenderedContainer;
   }
 
-  fillEmptyBarWithPlaceholders(
-    remainingTime: number,
-  ) {
-    const placeholderTotalTime = this.#items.reduce(
-      (acc, currentValue) => {
-        if (currentValue instanceof BarPlaceholder) {
-          return acc + RenderedBarContainer.PLACEHOLDER_DURATION;
-        } else return acc;
-      },
-      0,
-    );
+  fillEmptyBarWithPlaceholders(remainingTime: number) {
+    const placeholderTotalTime = this.items.reduce((acc, currentValue) => {
+      if (currentValue instanceof BarPlaceholder) {
+        return acc + RenderedBarContainer.PLACEHOLDER_DURATION;
+      } else return acc;
+    }, 0);
 
     if (remainingTime >= placeholderTotalTime) {
       for (let i = 0; i < (remainingTime - placeholderTotalTime) / 15; i++) {
-        this.#items.push(
-          this.insertUniquePlaceHolder(),
-        );
+        this.items.push(this.insertUniquePlaceHolder());
       }
     } else {
       for (let i = 0; i < (placeholderTotalTime - remainingTime) / 15; i++) {
@@ -77,10 +69,7 @@ export class RenderedBarContainer {
     }
   }
 
-  removeExtraPlaceholders(
-    quantityMoved: number,
-    remainingTime: number,
-  ) {
+  removeExtraPlaceholders(quantityMoved: number, remainingTime: number) {
     if (remainingTime < 0) {
       console.log("Not enough Time!");
       return [];
@@ -88,9 +77,5 @@ export class RenderedBarContainer {
     for (let i = 0; i < quantityMoved / 15; i++) {
       this.removeLastPlaceHolder();
     }
-  }
-
-  getItems() {
-    return this.#items;
   }
 }

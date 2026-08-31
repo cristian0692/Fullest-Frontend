@@ -1,19 +1,17 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { resolve } from "node:url";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import tailwindcss from "@tailwindcss/vite";
 
-// https://vite.dev/config/
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: [
-      {
-        find: "@",
-        replacement: resolve(__dirname, "./FullestFrontEnd/main/src/components/"),
-      },
-      { find: "!", replacement: resolve(__dirname, "./FullestFrontEnd/main/src/") },
-      { find: "?/", replacement: resolve(__dirname, "./Shared/") },
+      { find: "@", replacement: resolve(__dirname, "./main/src/components/") },
+      { find: "!", replacement: resolve(__dirname, "./main/src/") },
     ],
   },
 });

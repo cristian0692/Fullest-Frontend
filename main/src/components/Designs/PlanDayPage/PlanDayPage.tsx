@@ -9,8 +9,8 @@ import { useEventWidth } from "@/Logics/Hooks/EventWidthProvider.tsx";
 import { useEvent } from "@/Logics/Hooks/EventProvider.tsx";
 import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
 import { saveDay } from "../../../api/router.ts";
-import type { DayEvent } from "?/types.ts";
 import { useTime } from "../../Logics/Hooks/TimeProvider.tsx";
+import { DayEvent } from "!/domain/model/DayEvent.ts";
 
 const PlanDayPage = () => {
   const [step, setStep] = useState(1);
@@ -41,7 +41,6 @@ const PlanDayPage = () => {
   const animateBubbleShrink = () => {
     if (!redirecting || !bubbleRef.current) return;
 
-    //make the bubble ocuppy the whole screen
     const initialWidth = globalThis.innerWidth > globalThis.innerHeight
       ? "150vw"
       : "170vh";
@@ -49,7 +48,6 @@ const PlanDayPage = () => {
       ? "150vw"
       : "170vh";
 
-    // Set initial properties
     bubbleRef.current.style.width = initialWidth;
     bubbleRef.current.style.height = initialHeight;
     bubbleRef.current.style.top = "-50%";
@@ -72,10 +70,10 @@ const PlanDayPage = () => {
   const handleComplete = () => {
     const name = EVENT_CONTAINER_NAMES.barContent;
 
-    const eventIds = eventGroups[name];
+    const dragEvents = eventGroups[name];
 
-    const events: (DayEvent | undefined)[] = eventIds.map((id) => (
-      customEvents.find((event) => event.id == id)
+    const events: (DayEvent | undefined)[] = dragEvents.map((dragEvent) => (
+      customEvents.find((event) => event.getId() == dragEvent.getId())
     ));
     if (!events) {
       return;

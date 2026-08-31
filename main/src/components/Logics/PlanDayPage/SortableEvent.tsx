@@ -3,11 +3,11 @@ import { CSS } from "@dnd-kit/utilities";
 
 import CustomEvent from "./CustomEvent.tsx";
 import { useEvent } from "../Hooks/EventProvider.tsx";
-import { findEventById } from "!/utils/events.ts";
 import { barBorder, barHeight } from "!/data/globalData.ts";
 import { useDrag } from "../Hooks/DragProvider.tsx";
 import { useEventWidth } from "../Hooks/EventWidthProvider.tsx";
 import { getTimeMinutes } from "../Hooks/TimeProvider.tsx";
+import { DayEvent } from "!/domain/model/DayEvent.ts";
 
 type Props = {
   eventId: string;
@@ -31,7 +31,7 @@ const SortableEvent = (
   const { dayEvents: customEvents } = useEvent();
   const { activeEvent } = useDrag();
   const { pixelsPer15Minutes } = useEventWidth();
-  const currentEvent = findEventById(customEvents, eventId);
+  const currentEvent =  DayEvent.findEventById(customEvents, eventId);
 
   const style = {
     transform: CSS.Transform.toString(transform),

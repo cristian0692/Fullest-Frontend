@@ -3,7 +3,7 @@ export class BarPlaceholder {
     this.#id = id;
   }
   getId() {
-    return this.#id;
+    return "placeholder-" + this.#id;
   }
 
   #id: string;

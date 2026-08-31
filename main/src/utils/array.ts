@@ -1,12 +1,30 @@
 import { arrayMove as dndKitArrayMove } from "@dnd-kit/sortable";
 import { DragDayEvent } from "!/domain/viewModels/DragDayEvent.ts";
+import { DayEventContainer } from "!/domain/model/DayEventContainer.ts";
+import { DayEvent } from "!/domain/model/DayEvent.ts";
 
-export const removeAtIndex = (array: DragDayEvent[], index: number) => {
-  return [...array.slice(0, index), ...array.slice(index + 1)];
+export const moveBetweenContainers = ({
+  eventContainers,
+  oldContainer,
+  oldIndex,
+  newContainer,
+  newIndex: newIndex,
+  item,
+}: Props) => {
+  return {
+    ...eventContainers,
+    [oldContainer.getName()]: oldContainer.removeItem(oldIndex),
+    [newContainer.getName()]: newContainer.insertItem(item, newIndex),
+  };
 };
 
-export const insertAtIndex = (array: DragDayEvent[], index: number, item: DragDayEvent) => {
-  return [...array.slice(0, index), item, ...array.slice(index)];
+type Props = {
+  eventContainers: Record<string, DayEventContainer<DayEvent>>;
+  oldContainer: DayEventContainer<DragDayEvent>;
+  oldIndex: number;
+  newContainer: DayEventContainer<DragDayEvent>;
+  newIndex: number;
+  item: DragDayEvent;
 };
 
 export const arrayMove = (

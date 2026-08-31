@@ -31,8 +31,10 @@ export const EventProvider = ({ children }: { children: React.ReactNode }) => {
   const [description, setDescription] = useState("");
   const [color, setColor] = useState<Color>("bg-secondary");
   const [duration, setDuration] = useState(makeTodayWithTime(1, 0));
-  const [customEvents, setCustomEvents] = useState<DayEvent[]>([]);
-  const [eventContainers, setEventContainers] = useState<Record<string, DragDayEvent[]>>({});
+  const [dayEvents, setDayEvents] = useState<DayEvent[]>([]);
+  const [eventContainers, setEventContainers] = useState<
+    Record<string, DragDayEvent[]>
+  >({});
 
   return (
     <EventContext.Provider
@@ -45,8 +47,8 @@ export const EventProvider = ({ children }: { children: React.ReactNode }) => {
         setDuration,
         color,
         setColor,
-        dayEvents: customEvents,
-        setDayEvents: setCustomEvents,
+        dayEvents,
+        setDayEvents,
         eventContainers,
         setEventContainers,
       }}

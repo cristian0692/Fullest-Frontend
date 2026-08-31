@@ -45,6 +45,18 @@ export class DayEvent {
       startTime,
     );
   }
+
+  static findEventById (events: DayEvent[], id: string) {
+  const currentEvent = events.find((ev) => ev.getId() === id);
+
+  if (!currentEvent) {
+    return null;
+  }
+
+  return currentEvent;
+};
+
+
   #id: string;
   #title: string;
   #description: string;
