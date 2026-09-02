@@ -2,7 +2,8 @@ import { createContext, useContext, useState } from "react";
 import { makeTodayWithTime } from "@/Logics/Hooks/TimeProvider.tsx";
 import { Color } from "!/domain/model/enums/Color.ts";
 import { DayEvent } from "!/domain/model/DayEvent.ts";
-import { DragDayEvent } from "!/domain/viewModels/DragDayEvent.ts";
+import { DayEventContainer } from "!/domain/model/DayEventContainer.ts";
+import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
 
 // 1. Define the context type
 type EventContextType = {
@@ -17,9 +18,9 @@ type EventContextType = {
 
   dayEvents: DayEvent[];
   setDayEvents: React.Dispatch<React.SetStateAction<DayEvent[]>>;
-  eventContainers: Record<string, DragDayEvent[]>;
+  eventContainers: Record<string, DayEventContainer>;
   setEventContainers: React.Dispatch<
-    React.SetStateAction<Record<string, DragDayEvent[]>>
+    React.SetStateAction<Record<string, DayEventContainer>>
   >;
 };
 
@@ -33,8 +34,15 @@ export const EventProvider = ({ children }: { children: React.ReactNode }) => {
   const [duration, setDuration] = useState(makeTodayWithTime(1, 0));
   const [dayEvents, setDayEvents] = useState<DayEvent[]>([]);
   const [eventContainers, setEventContainers] = useState<
-    Record<string, DragDayEvent[]>
-  >({});
+    Record<string, DayEventContainer>
+  >({
+    [EVENT_CONTAINER_NAMES.localEvents]: new DayEventContainer(
+      EVENT_CONTAINER_NAMES.localEvents,
+    ),
+    [EVENT_CONTAINER_NAMES.barEvents]: new DayEventContainer(
+      EVENT_CONTAINER_NAMES.barEvents,
+    ),
+  });
 
   return (
     <EventContext.Provider

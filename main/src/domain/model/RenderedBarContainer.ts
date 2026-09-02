@@ -41,16 +41,6 @@ export class RenderedBarContainer extends DayEventContainer<
     }
     this.items = newRenderedContainer;
   }
-
-  addMissingPlaceholders(minutesRemoved: number) {
-    const newRenderedContainer = [...this.items];
-
-    for (let i = 0; i < minutesRemoved / 15; i++) {
-      newRenderedContainer.push(this.insertUniquePlaceHolder());
-    }
-    this.items = newRenderedContainer;
-  }
-
   fillEmptyBarWithPlaceholders(remainingTime: number) {
     const placeholderTotalTime = this.items.reduce((acc, currentValue) => {
       if (currentValue instanceof BarPlaceholder) {
@@ -69,13 +59,72 @@ export class RenderedBarContainer extends DayEventContainer<
     }
   }
 
-  removeExtraPlaceholders(quantityMoved: number, remainingTime: number) {
-    if (remainingTime < 0) {
-      console.log("Not enough Time!");
-      return [];
+  addMissingPlaceholdersAfterRemoval(index: number, minutesRemoved: number) {
+    const newRenderedContainer = [...this.items];
+    for (let i = index; i < minutesRemoved / 15; i++) {
+      this.items = [
+        ...this.items.slice(0, index),
+        this.insertUniquePlaceHolder(),
+        ...this.items.slice(index + 1),
+      ];
     }
+    this.items = newRenderedContainer;
+  }
+
+  removeExtraPlaceholdersAfterInsertion(
+    eventIndex: number,
+    quantityMoved: number,
+  ) {
     for (let i = 0; i < quantityMoved / 15; i++) {
-      this.removeLastPlaceHolder();
+      const isSubstractingFromLeft = i % 2 === 0 ? true : false;
+      if (isSubstractingFromLeft === true) {
+        if (eventIndex - 1 < 0) {
+          quantityMoved += 15;
+          continue;
+        }
+
+        this.items = [
+          ...this.items.slice(0, eventIndex - 1),
+          ...this.items.slice(eventIndex),
+        ];
+
+        eventIndex -= 1;
+      } else {
+        if (eventIndex + 1 >= this.items.length) {
+          quantityMoved += 15;
+          continue;
+        }
+        this.items = [
+          ...this.items.slice(0, eventIndex + 1),
+          ...this.items.slice(eventIndex + 2),
+        ];
+      }
     }
+  }
+
+  override insertItem(dayEvent: DragDayEvent, index?: number) {
+    if (index != undefined)
+      this.items = [
+        ...this.items.slice(0, index),
+        dayEvent,
+        ...this.items.slice(index),
+      ];
+    else this.items = [...this.items, dayEvent];
+
+    this.removeExtraPlaceholdersAfterInsertion(
+      index ?? this.items.length - 1,
+      dayEvent.getDuration(),
+    );
+  }
+
+  override removeItem(index: number) {
+    const dragEvent: DragDayEvent = this.items[index] as DragDayEvent;
+
+    this.items = [
+      ...this.items.slice(0, index),
+      ...this.items.slice(index + 1),
+    ];
+
+    this.addMissingPlaceholdersAfterRemoval(index, dragEvent.getDuration());
   }
 }

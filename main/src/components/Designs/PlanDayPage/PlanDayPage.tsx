@@ -16,7 +16,7 @@ const PlanDayPage = () => {
   const [step, setStep] = useState(1);
   const { setBarWidth } = useEventWidth();
   const { wakeTime, sleepTime } = useTime();
-  const { eventContainers: eventGroups, dayEvents: customEvents } = useEvent();
+  const { eventContainers, dayEvents } = useEvent();
   const [redirecting, setRedirecting] = useState(true);
   const bubbleRef = useRef<HTMLDivElement>(null);
   const duration = 1500;
@@ -70,10 +70,10 @@ const PlanDayPage = () => {
   const handleComplete = () => {
     const name = EVENT_CONTAINER_NAMES.barContent;
 
-    const dragEvents = eventGroups[name];
+    const dragEvents = eventContainers[name];
 
-    const events: (DayEvent | undefined)[] = dragEvents.map((dragEvent) => (
-      customEvents.find((event) => event.getId() == dragEvent.getId())
+    const events: (DayEvent | undefined)[] = dragEvents.getItems().map((dragEvent) => (
+      dayEvents.find((event) => event.getId() == dragEvent.getId())
     ));
     if (!events) {
       return;

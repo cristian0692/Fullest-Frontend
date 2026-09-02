@@ -5,19 +5,22 @@ import StepsTemplate from "@/Designs/PlanDayPage/Steps/StepsTemplate.tsx";
 import { useDrag } from "@/Logics/Hooks/DragProvider.tsx";
 import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
 import SortableContainer from "../../../Logics/PlanDayPage/Bar/SortableArea.tsx";
+import { DayEventContainer } from "!/domain/model/DayEventContainer.ts";
+import { DragDayEvent } from "!/domain/viewModels/DragDayEvent.ts";
 
 type Props = {
   onPrevious: () => void;
   onComplete: () => void;
 };
 const PlaceEventsStep = ({ onComplete, onPrevious }: Props) => {
-  const { eventContainers: eventGroups } = useEvent();
+  const { eventContainers } = useEvent();
   const { setIsDraggable } = useDrag();
 
-  const name = EVENT_CONTAINER_NAMES["localEvents"];
+  const name = EVENT_CONTAINER_NAMES.localEvents;
 
-  const localEvents = eventGroups[name] ? eventGroups[name] : [];
-
+  const localEvents = eventContainers[name] != null
+    ? eventContainers[name].getItems().map((item) => item.toDragDayEvent())
+    : new DayEventContainer<DragDayEvent>(EVENT_CONTAINER_NAMES.localEvents).getItems();
   return (
     <StepsTemplate number={3}>
       <Heading
@@ -29,8 +32,9 @@ const PlaceEventsStep = ({ onComplete, onPrevious }: Props) => {
           <SortableContainer
             id={name}
             items={localEvents}
-            extraStyling={"gap-4 flex-nowrap " +
-              (localEvents.length == 0 ? "w-max" : "")}
+            extraStyling={
+              "gap-4 flex-nowrap " + (localEvents.length == 0 ? "w-max" : "")
+            }
           />
         </div>
         <div

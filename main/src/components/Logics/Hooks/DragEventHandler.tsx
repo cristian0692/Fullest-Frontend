@@ -17,10 +17,7 @@ import type {
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 
 import CustomEvent from "@/Logics/PlanDayPage/CustomEvent.tsx";
-import {
-  arrayMove,
-  moveBetweenContainers,
-} from "!/utils/array.ts";
+import { arrayMove, moveBetweenContainers } from "!/utils/array.ts";
 
 import { useEvent } from "./EventProvider.tsx";
 import { InsertionType, useDrag } from "./DragProvider.tsx";
@@ -35,15 +32,11 @@ type Props = {
 const DragEventHandler = ({ children }: Props) => {
   const { activeEvent, setActiveEvent } = useDrag();
   const {
-    eventContainers: eventGroups,
-    setEventContainers: setEventGroups,
+    eventContainers,
+    setEventContainers,
     dayEvents: customEvents,
   } = useEvent();
-  const {
-    setInserted,
-    setQuantityMoved,
-    renderedBarItems,
-  } = useDrag();
+  const { setInserted, setQuantityMoved, dragContainers } = useDrag();
   const { remainingTime } = useTime();
   const [lastMove, setLastMove] = useState<{
     out: string;
@@ -62,7 +55,7 @@ const DragEventHandler = ({ children }: Props) => {
       calculateInsertionType(lastMove.in);
       setLastMove(null); // Reset the trigger
     }
-  }, [eventGroups, lastMove]);
+  }, [eventContainers, lastMove]);
   const handleDragStart = ({ active }: DragStartEvent) => {
     setActiveEvent(DayEvent.findEventById(customEvents, active.id.toString()));
   };
@@ -74,17 +67,16 @@ const DragEventHandler = ({ children }: Props) => {
     if (!overId || !active.data.current) {
       return;
     }
-    const activeContainer = active.data.current.sortable.containerId;
-    const overContainer = over.data.current?.sortable.containerId || over.id;
-    const activeIndex = active.data.current?.sortable.index;
-    const overIndex = renderedBarItems?.find((item) => item.getId() == overId)
-      ? eventGroups[overContainer].length + 1
-      : over.data.current?.sortable.index;
+    const activeContainer = active.data.current.sortable.containerId as string;
+    const overContainer =
+      over.data.current?.sortable.containerId || (over.id as string);
+    const activeIndex = active.data.current?.sortable.index as number;
+    const overIndex = over.data.current?.sortable.index as number;
 
     if (activeContainer !== overContainer) {
       const currentEvent = DayEvent.findEventById(
         customEvents,
-        eventGroups[activeContainer][activeIndex].getId(),
+        eventContainers[activeContainer].getItems()[activeIndex].getId(),
       );
       if (
         !currentEvent ||
@@ -93,16 +85,15 @@ const DragEventHandler = ({ children }: Props) => {
       ) {
         return;
       }
-      setEventGroups((eventGroups) => {
-        return moveBetweenContainers({
-          items: eventGroups,
-          activeContainer,
-          oldIndex: activeIndex,
-          newContainer: overContainer,
-          newIndex: overIndex,
-          item: currentEvent.toDragDayEvent(),
-        });
+      moveBetweenContainers({
+        eventContainers,
+        oldContainer: dragContainers[activeContainer],
+        oldIndex: activeIndex,
+        newContainer: dragContainers[overContainer],
+        newIndex: overIndex,
+        item: currentEvent.toDragDayEvent(),
       });
+
       if (currentEvent) {
         setQuantityMoved(getTimeMinutes(currentEvent.getDuration()));
         setLastMove({
@@ -124,16 +115,17 @@ const DragEventHandler = ({ children }: Props) => {
       const overContainer = over.data.current?.sortable.containerId || over.id;
       const activeIndex = active.data.current.sortable.index;
       const overIndex =
-        over.id in eventGroups
-          ? eventGroups[overContainer].length + 1
+        over.id in eventContainers
+          ? eventContainers[overContainer].getItems().length + 1
           : over.data.current?.sortable.index;
-      setEventGroups((eventGroup) => {
+
+      setEventContainers((eventGroup) => {
         let newItems = eventGroup;
         if (activeContainer === overContainer) {
           newItems = {
             ...eventGroup,
             [overContainer]: arrayMove(
-              eventGroup[overContainer],
+              dragContainers[overContainer].getItems(),
               activeIndex,
               overIndex,
             ),
@@ -149,8 +141,8 @@ const DragEventHandler = ({ children }: Props) => {
 
   const calculateInsertionType = (inContainer: string) => {
     const barContainerName = EVENT_CONTAINER_NAMES.barContent;
-    const items = eventGroups[barContainerName];
-    if (!items) {
+    const items = eventContainers[barContainerName].getItems();
+    if (items.length === 0) {
       console.error("contents of the bar not found!");
       return;
     }

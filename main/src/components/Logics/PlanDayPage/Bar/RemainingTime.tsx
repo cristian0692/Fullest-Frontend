@@ -18,7 +18,7 @@ const calculateTotalEventTime = (
 
 const RemainingTime = () => {
   const { wakeTime, sleepTime, setRemainingTime } = useTime();
-  const { eventContainers: eventGroups } = useEvent();
+  const { eventContainers } = useEvent();
   const [isDisplayError, setIsDisplayError] = useState(false);
   const [remainingTotalTime, setRemainingTotalTime] = useState("00:00"); //the text that is displayed
   const { isError, date: totalDayTime } = calculateTimeInterval(
@@ -29,7 +29,7 @@ const RemainingTime = () => {
 
   useEffect(() => {
     const totalMinutes = calculateTotalEventTime(
-      eventGroups[name] ?? [],
+      eventContainers[name].getItems().map(item => item.toDragDayEvent()) ?? [],
     );
     const totalHours = Math.floor(totalMinutes / 60);
     const remainingMinutes = totalMinutes % 60;
@@ -43,7 +43,7 @@ const RemainingTime = () => {
     setIsDisplayError(isError || result.isError);
     setRemainingTime(result.totalMinutes);
 
-  }, [eventGroups[name], wakeTime, sleepTime]);
+  }, [eventContainers[name], wakeTime, sleepTime]);
   return (
     <div
       className={`flex flex-col items-center ${

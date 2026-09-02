@@ -25,13 +25,13 @@ const WriteEventsStep = ({ onPrevious, onNext }: Props) => {
     duration,
     setDuration,
     setDayEvents,
-    setEventContainers,
+    eventContainers,
     dayEvents: customEvents,
   } = useEvent();
 
   const [showEvents, setShowEvents] = useState(false);
   const { setIsDraggable } = useDrag();
-  const name = EVENT_CONTAINER_NAMES["localEvents"];
+  const name = EVENT_CONTAINER_NAMES.localEvents;
 
   const [titleError, setTitleError] = useState("");
   const addCurrentEvent = () => {
@@ -47,14 +47,9 @@ const WriteEventsStep = ({ onPrevious, onNext }: Props) => {
       duration,
     ); // use the current values BEFORE clearing
     setDayEvents((prev) => [...prev, newEvent]);
+    eventContainers[name].insertItem(newEvent);
 
-    setEventContainers((prev) => {
-      const currentWowEvents = prev[name] || [];
-      return {
-        ...prev,
-        [name]: [...currentWowEvents, newEvent.toDragDayEvent()],
-      };
-    });
+
     setDescription("");
     setDuration(makeTodayWithTime(1, 0));
     setTitle("");

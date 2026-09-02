@@ -26,28 +26,96 @@ Deno.test("renders 16 placeholders by default", () => {
   expect(placeholders.length).toBe(16);
 });
 
-Deno.test("adds an event to the bar, removes excess placeholders", () => {
+Deno.test("moves an event to the bar, removes excess placeholders", () => {
   //Arrange
   const eventId = "1";
   const duration = new Date();
   duration.setHours(1);
-  const sampleEvent = new DragDayEvent(
+  duration.setMinutes(0);
+  const sampleEvent = new DayEvent(
     eventId,
     "new event",
+    "This is a description",
     "bg-green-500",
-    getTimeMinutes(duration),
+    duration,
   );
 
-  const renderedContainer: DayEventContainer<DragDayEvent> = new RenderedContainer();
-  const renderedBarContainer: RenderedBarContainer = new RenderedBarContainer();
+  const renderedContainer: DayEventContainer<DragDayEvent> =
+    new DayEventContainer(EVENT_CONTAINER_NAMES.localEvents, [
+      sampleEvent.toDragDayEvent(),
+    ]);
+  const renderedBarContainer: RenderedBarContainer = new RenderedBarContainer(
+    EVENT_CONTAINER_NAMES.barEvents,
+  );
 
-  
+  renderedBarContainer.fillEmptyBarWithPlaceholders(120); // 8 placeholders
+
   const eventContainers: Record<string, DayEventContainer<DayEvent>> = {
-    [EVENT_CONTAINER_NAMES.localEvents]: new DayEventContainer([sampleEvent]),
-    [EVENT_CONTAINER_NAMES.barEvents]: new DayEventContainer(),
+    [renderedContainer.getName()]: new DayEventContainer("Unplaced Events", [
+      sampleEvent,
+    ]),
+    [renderedBarContainer.getName()]: new DayEventContainer("Bar Events"),
   };
+  //Act
+  moveBetweenContainers({
+    eventContainers,
+    oldContainer: renderedContainer,
+    oldIndex: 0,
+    newContainer: renderedBarContainer,
+    newIndex: 3,
+    item: sampleEvent.toDragDayEvent(),
+  });
 
-  renderedContainer.insertItem(sampleEvent);
+  //Assert
+  expect(
+    eventContainers[renderedBarContainer.getName()].getItems().length,
+  ).toBe(1);
+  expect(renderedBarContainer.getItems().length).toBe(5);
+  expect(renderedContainer.getItems().length).toBe(0);
+  expect(eventContainers[renderedContainer.getName()].getItems().length).toBe(
+    0,
+  );
+  expect(
+    eventContainers[renderedBarContainer.getName()].getItems()[0].getId(),
+  ).toBe(eventId);
+});
 
-  moveBetweenContainers({eventContainers , renderedContainer});
+Deno.test("moves event out of the bar, adds missing placeholders", () => {
+  //Arrange
+  const eventId = "1";
+  const duration = new Date();
+  duration.setHours(1);
+  duration.setMinutes(0);
+  const sampleEvent = new DayEvent(
+    eventId,
+    "new event",
+    "This is a description",
+    "bg-green-500",
+    duration,
+  );
+
+  const renderedContainer: DayEventContainer<DragDayEvent> =
+    new DayEventContainer(EVENT_CONTAINER_NAMES.localEvents);
+  const renderedBarContainer: RenderedBarContainer = new RenderedBarContainer(
+    EVENT_CONTAINER_NAMES.barEvents
+  );
+
+  renderedBarContainer.fillEmptyBarWithPlaceholders(120); // 8 placeholders
+  renderedBarContainer.insertItem(sampleEvent.toDragDayEvent(), 3); // add event to the bar
+
+  const eventContainers: Record<string, DayEventContainer<DayEvent>> = {
+    [renderedContainer.getName()]: new DayEventContainer("Unplaced Events"),
+    [renderedBarContainer.getName()]: new DayEventContainer("Bar Events", [
+      sampleEvent,
+    ]),
+  };
+  //Act
+  moveBetweenContainers({
+    eventContainers,
+    oldContainer: renderedBarContainer,
+    oldIndex: 0,
+    newContainer: renderedContainer,
+    newIndex: 3,
+    item: sampleEvent.toDragDayEvent(),
+  });
 });
