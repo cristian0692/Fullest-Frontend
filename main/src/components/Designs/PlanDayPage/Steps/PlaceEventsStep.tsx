@@ -18,9 +18,7 @@ const PlaceEventsStep = ({ onComplete, onPrevious }: Props) => {
 
   const name = EVENT_CONTAINER_NAMES.localEvents;
 
-  const localEvents = eventContainers[name] != null
-    ? eventContainers[name].getItems().map((item) => item.toDragDayEvent())
-    : new DayEventContainer<DragDayEvent>(EVENT_CONTAINER_NAMES.localEvents).getItems();
+  const localEvents = eventContainers[name].getEvents();
   return (
     <StepsTemplate number={3}>
       <Heading
@@ -31,7 +29,7 @@ const PlaceEventsStep = ({ onComplete, onPrevious }: Props) => {
         <div className="overflow-x-scroll h-40 flex min-w-40">
           <SortableContainer
             id={name}
-            items={localEvents}
+            items={localEvents.map((event) => event.toDragDayEvent())}
             extraStyling={
               "gap-4 flex-nowrap " + (localEvents.length == 0 ? "w-max" : "")
             }

@@ -16,10 +16,9 @@ type TimeOption = {
 
 function generateTimes(max: number, duration?: boolean) {
   return Array.from({ length: max * 4 + (duration ? 1 : 0) }, (_, i) => {
-    if (duration && i == 0) i += 1;
-    const hours = Math.floor(i / 4);
-    const minutes = (i % 4) * 15;
-
+    const minuteIndex = duration ? i + 1 : i; // skip the 0-minute mark for durations
+    const hours = Math.floor(minuteIndex / 4);
+    const minutes = (minuteIndex % 4) * 15;
     const date = new Date();
     date.setHours(hours, minutes, 0, 0);
 

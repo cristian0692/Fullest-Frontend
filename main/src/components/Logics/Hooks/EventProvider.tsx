@@ -2,9 +2,9 @@ import { createContext, useContext, useState } from "react";
 import { makeTodayWithTime } from "@/Logics/Hooks/TimeProvider.tsx";
 import { Color } from "!/domain/model/enums/Color.ts";
 import { DayEvent } from "!/domain/model/DayEvent.ts";
-import { DayEventContainer } from "!/domain/model/DayEventContainer.ts";
 import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
 import { RenderedContainer } from "!/domain/model/RenderedContainer.ts";
+import { RenderType } from "!/domain/model/enums/RenderType.ts";
 
 // 1. Define the context type
 type EventContextType = {
@@ -42,6 +42,7 @@ export const EventProvider = ({ children }: { children: React.ReactNode }) => {
     ),
     [EVENT_CONTAINER_NAMES.barEvents]: new RenderedContainer(
       EVENT_CONTAINER_NAMES.barEvents,
+      RenderType.Bar,
     ),
   });
 

@@ -47,7 +47,7 @@ const WriteEventsStep = ({ onPrevious, onNext }: Props) => {
       duration,
     ); // use the current values BEFORE clearing
     setDayEvents((prev) => [...prev, newEvent]);
-    eventContainers[name].insertItem(newEvent);
+    eventContainers[name].insertEvent(newEvent);
 
 
     setDescription("");

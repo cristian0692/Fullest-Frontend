@@ -3,16 +3,18 @@ import { DragDayEvent } from "!/domain/model/dragables/DragDayEvent.ts";
 import { DayEventContainer } from "!/domain/model/DayEventContainer.ts";
 import { DayEvent } from "!/domain/model/DayEvent.ts";
 import { Dragable } from "!/domain/model/dragables/Dragable.ts";
+import { RenderType } from "!/domain/model/enums/RenderType.ts";
 export class RenderedContainer extends DayEventContainer {
   static PLACEHOLDER_DURATION = 15;
   static MAX_PlACEHOLDERS = 24 * (60 / this.PLACEHOLDER_DURATION);
   #items: Dragable[];
-  constructor(name: string) {
+
+  #type: RenderType;
+  constructor(name: string, type?: RenderType) {
     super(name, []);
     this.#items = [];
+    this.#type = type ?? RenderType.Default;
   }
-
-
 
   insertUniquePlaceHolder() {
     for (let i = 0; i < RenderedContainer.MAX_PlACEHOLDERS; i++) {
@@ -28,6 +30,14 @@ export class RenderedContainer extends DayEventContainer {
     return this.#items
       .filter((barEvent) => barEvent instanceof BarPlaceholder)
       .map((barEvent) => barEvent.getId());
+  }
+
+  countPlaceholders() {
+    return this.#items.reduce((acc, item) => {
+      if (item instanceof BarPlaceholder) {
+        return acc + 1;
+      } else return acc;
+    }, 0);
   }
 
   removeLastPlaceHolder() {
@@ -63,15 +73,14 @@ export class RenderedContainer extends DayEventContainer {
   }
 
   addMissingPlaceholdersAfterRemoval(index: number, minutesRemoved: number) {
-    const newRenderedContainer = [...this.#items];
-    for (let i = index; i < minutesRemoved / 15; i++) {
-      this.#items = [
-        ...this.#items.slice(0, index),
+    for (let i = 0; i < minutesRemoved / 15; i++) {
+      this.#insert<Dragable>(
+        this.#items,
         this.insertUniquePlaceHolder(),
-        ...this.#items.slice(index + 1),
-      ];
+        index,
+      );
     }
-    this.#items = newRenderedContainer;
+    index += 1;
   }
 
   removeExtraPlaceholdersAfterInsertion(
@@ -79,28 +88,41 @@ export class RenderedContainer extends DayEventContainer {
     quantityMoved: number,
   ) {
     let leftAvailable = true;
-    let rightAvailable = false;
+    let rightAvailable = true;
     for (let i = 0; i < quantityMoved / 15; i++) {
-      const isSubstractingFromLeft = i % 2 === 0 ? true : false;
-      const result = this.#removePlaceholder(
+      if (!leftAvailable && !rightAvailable) {
+        console.log("no more time left!");
+        break;
+      }
+      let isSubstractingFromLeft;
+      if (!leftAvailable) isSubstractingFromLeft = false;
+      else if (!rightAvailable) isSubstractingFromLeft = true;
+      else isSubstractingFromLeft = i % 2 === 0 ? true : false;
+
+      const removalFailed = this.#removePlaceholder(
         isSubstractingFromLeft,
         eventIndex,
       );
-
-      if (this.#removalFailed(result)) {
+      if (
+        this.#succesfullyRemovedFromLeft(isSubstractingFromLeft, removalFailed)
+      ) {
+        eventIndex -= 1;
+      }
+      if (removalFailed) {
         if (isSubstractingFromLeft) leftAvailable = false;
         else rightAvailable = false;
         quantityMoved += this.#addOneMoreIteration();
       }
     }
+  }
 
-    if (!leftAvailable && !rightAvailable) {
-      console.log("no more time left!");
-    }
+  #succesfullyRemovedFromLeft(
+    isDirectionLeft: boolean,
+    removalFailed: boolean,
+  ) {
+    return isDirectionLeft && !removalFailed;
   }
-  #removalFailed(result: boolean) {
-    return !result;
-  }
+
   #addOneMoreIteration() {
     return 15;
   }
@@ -108,54 +130,64 @@ export class RenderedContainer extends DayEventContainer {
     let quantity = 1;
     if (isDirectionLeft === true) {
       while (!(index - quantity < 0)) {
-        if (this.events[index - quantity] instanceof DragDayEvent) {
+        if (this.#items[index - quantity] instanceof DragDayEvent) {
           quantity += 1;
           continue;
         }
-        this.events = [
-          ...this.events.slice(0, index - quantity),
-          ...this.events.slice(index - quantity + 1),
-        ];
-        index -= 1;
+        this.#remove(this.#items, index - quantity);
 
-        return true;
+        return false;
       }
-    } else if (isDirectionLeft === false) {
-      while (!(index + quantity >= this.events.length)) {
-        if (this.events[index + quantity] instanceof DragDayEvent) {
+    } else {
+      while (!(index + quantity >= this.#items.length)) {
+        if (this.#items[index + quantity] instanceof DragDayEvent) {
           quantity += 1;
           continue;
         }
-
-        this.events = [
-          ...this.events.slice(0, index + quantity),
-          ...this.events.slice(index + quantity + 1),
-        ];
-
-        return true;
+        this.#remove(this.#items, index + quantity);
+        return false;
       }
     }
+    return true;
+  }
 
-    return false;
+
+  moveEvent(oldIndex: number, newIndex: number) {
+    const dragEvent = this.#items[oldIndex];
+    this.#remove<Dragable>(this.#items, oldIndex);
+    this.#insert<Dragable>(this.#items, dragEvent, newIndex);
   }
 
   override insertEvent(dayEvent: DayEvent, index?: number) {
-
+    const eventIndex = this.calculateEventIndex(index);
+    const eventDuration = dayEvent.toDragDayEvent().getDuration();
+    if (
+      this.countPlaceholders() * 15 < eventDuration &&
+      this.#type == RenderType.Bar
+    ) {
+      throw new Error("Not enough placeholders to insert the event!");
+    }
 
     this.#insert<Dragable>(this.#items, dayEvent.toDragDayEvent(), index);
-    this.#insert<DayEvent>(this.events, dayEvent, index);
-
-    this.removeExtraPlaceholdersAfterInsertion(
-      index ?? this.events.length - 1,
-      dayEvent.toDragDayEvent().getDuration(),
-    );
+    this.#insert<DayEvent>(this.events, dayEvent, eventIndex);
+    if (this.#type == RenderType.Bar) {
+      this.removeExtraPlaceholdersAfterInsertion(
+        index ?? this.#items.length - 1,
+        eventDuration,
+      );
+    }
   }
 
   override removeEvent(index: number) {
-    const dragEvent = this.removeItem(index);
+    const eventIndex = this.calculateEventIndex(index);
 
-    this.addMissingPlaceholdersAfterRemoval(index, dragEvent.getDuration());
+    const dragEvent = this.removeItem(index);
+    this.#remove<DayEvent>(this.events, eventIndex);
+
+    if (this.#type == RenderType.Bar)
+      this.addMissingPlaceholdersAfterRemoval(index, dragEvent.getDuration());
   }
+
   removeItem(index: number) {
     const dragEvent: Dragable = this.#items[index];
 
@@ -164,18 +196,38 @@ export class RenderedContainer extends DayEventContainer {
     return dragEvent;
   }
 
+  calculateEventIndex(index?: number) {
+    let eventIndex = 0;
+
+    if (index == undefined) {
+      return this.events.length;
+    }
+
+    while (index > 0) {
+      const item = this.#items[index - 1];
+      if (item instanceof DragDayEvent) {
+        eventIndex += 1;
+      }
+      index -= 1;
+    }
+
+    return eventIndex;
+  }
+
   #insert<T>(array: T[], t: T, index?: number) {
-    if (index != undefined)
-      array = [...array.slice(0, index), t, ...array.slice(index)];
-    else array = [...array, t];
+    if (index != undefined) array.splice(index, 0, t);
+    else array.push(t);
   }
 
   #remove<T>(array: T[], index: number) {
-    array = [...array.slice(0, index), ...array.slice(index + 1)];
+    array.splice(index, 1);
   }
 
-
-    getItems(){
+  getItems() {
     return this.#items;
+  }
+
+  setItems(items: Dragable[]) {
+    this.#items = items;
   }
 }

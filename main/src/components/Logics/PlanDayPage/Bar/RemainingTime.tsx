@@ -8,9 +8,7 @@ import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
 import { useEffect, useState } from "react";
 import { DragDayEvent } from "!/domain/model/dragables/DragDayEvent.ts";
 
-const calculateTotalEventTime = (
-  barEvents: DragDayEvent[],
-) => {
+const calculateTotalEventTime = (barEvents: DragDayEvent[]) => {
   return barEvents.reduce<number>((acc, barEvent) => {
     return acc + barEvent.getDuration();
   }, 0);
@@ -29,24 +27,19 @@ const RemainingTime = () => {
 
   useEffect(() => {
     const totalMinutes = calculateTotalEventTime(
-      eventContainers[name].getItems().map(item => item.toDragDayEvent()) ?? [],
-);
-
-
+      eventContainers[name].getEvents().map((item) => item.toDragDayEvent()) ??
+        [],
+    );
 
     const totalHours = Math.floor(totalMinutes / 60);
     const remainingMinutes = totalMinutes % 60;
     const totalTime: Date = makeTodayWithTime(totalHours, remainingMinutes);
 
-    const result = calculateTimeInterval(
-      totalTime,
-      totalDayTime,
-    );
+    const result = calculateTimeInterval(totalTime, totalDayTime);
     setRemainingTotalTime(result.text);
     setIsDisplayError(isError || result.isError);
     setRemainingTime(result.totalMinutes);
-
-  }, [eventContainers[name], wakeTime, sleepTime]);
+  }, [eventContainers[name].getItems().length, wakeTime, sleepTime]);
   return (
     <div
       className={`flex flex-col items-center ${

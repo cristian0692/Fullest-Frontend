@@ -9,18 +9,14 @@ export class DragDayEvent extends Dragable {
     durationInMinutes: number,
     startingTime?: Date,
   ) {
-    super(id);
+    super(id, durationInMinutes);
     this.#title = title;
     this.#color = color;
-    this.#durationInMinutes = durationInMinutes;
     this.#startingTime = startingTime;
   }
 
-  getDuration() {
-    return this.#durationInMinutes;
-  }
+
   #title: string;
   #color: string;
-  #durationInMinutes: number;
   #startingTime: Date | undefined;
 }

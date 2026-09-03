@@ -20,7 +20,7 @@ import CustomEvent from "@/Logics/PlanDayPage/CustomEvent.tsx";
 import { arrayMove, moveBetweenContainers } from "!/utils/array.ts";
 
 import { useEvent } from "./EventProvider.tsx";
-import { InsertionType, useDrag } from "./DragProvider.tsx";
+import { useDrag } from "./DragProvider.tsx";
 import { EVENT_CONTAINER_NAMES } from "../../../data/globalData.ts";
 import { getTimeMinutes, useTime } from "./TimeProvider.tsx";
 import { DayEvent } from "!/domain/model/DayEvent.ts";
@@ -34,9 +34,9 @@ const DragEventHandler = ({ children }: Props) => {
   const {
     eventContainers,
     setEventContainers,
-    dayEvents: customEvents,
+    dayEvents,
   } = useEvent();
-  const { setInserted, setQuantityMoved } = useDrag();
+  const { setQuantityMoved } = useDrag();
   const { remainingTime } = useTime();
   const [lastMove, setLastMove] = useState<{
     out: string;
@@ -52,12 +52,11 @@ const DragEventHandler = ({ children }: Props) => {
   );
   useEffect(() => {
     if (lastMove) {
-      calculateInsertionType(lastMove.in);
       setLastMove(null); // Reset the trigger
     }
   }, [eventContainers, lastMove]);
   const handleDragStart = ({ active }: DragStartEvent) => {
-    setActiveEvent(DayEvent.findEventById(customEvents, active.id.toString()));
+    setActiveEvent(DayEvent.findEventById(dayEvents, active.id.toString()));
   };
 
   const handleDragCancel = () => setActiveEvent(null);
@@ -75,7 +74,7 @@ const DragEventHandler = ({ children }: Props) => {
 
     if (activeContainer !== overContainer) {
       const currentEvent = DayEvent.findEventById(
-        customEvents,
+        dayEvents,
         eventContainers[activeContainer].getItems()[activeIndex].getId(),
       );
       if (
@@ -85,14 +84,21 @@ const DragEventHandler = ({ children }: Props) => {
       ) {
         return;
       }
-      moveBetweenContainers({
-        eventContainers,
+      const moveFailed = moveBetweenContainers({
         oldContainer: eventContainers[activeContainer],
         oldIndex: activeIndex,
         newContainer: eventContainers[overContainer],
         newIndex: overIndex,
-        item: currentEvent.toDragDayEvent(),
+        item: currentEvent,
       });
+
+
+      if(moveFailed){
+        return; 
+      }
+      setEventContainers({ ...eventContainers });
+
+
 
       if (currentEvent) {
         setQuantityMoved(getTimeMinutes(currentEvent.getDuration()));
@@ -111,17 +117,16 @@ const DragEventHandler = ({ children }: Props) => {
       return;
     }
     if (active.id !== over.id) {
-      const activeContainer = active.data.current.sortable.containerId;
       const overContainer = over.data.current?.sortable.containerId || over.id;
       const activeIndex = active.data.current.sortable.index;
       const overIndex =
         over.id in eventContainers
-          ? eventContainers[overContainer].getItems().length + 1
+          ? eventContainers[overContainer].getItems().length
           : over.data.current?.sortable.index;
 
-      dragContainers[overContainer].setItems(
+      eventContainers[overContainer].setItems(
         arrayMove(
-          dragContainers[overContainer].getItems(),
+          eventContainers[overContainer].getItems(),
           activeIndex,
           overIndex,
         )
@@ -129,26 +134,6 @@ const DragEventHandler = ({ children }: Props) => {
     }
 
     setActiveEvent(null);
-  };
-
-  const calculateInsertionType = (inContainer: string) => {
-    const barContainerName = EVENT_CONTAINER_NAMES.barEvents;
-    const items = eventContainers[barContainerName].getItems();
-    if (items.length === 0) {
-      console.error("contents of the bar not found!");
-      return;
-    }
-    if (insertingIntoContainer(inContainer, barContainerName)) {
-      setInserted(InsertionType.in);
-    } else {
-      setInserted(InsertionType.out);
-    }
-  };
-  const insertingIntoContainer = (
-    inContainer: string,
-    barContainerName: string,
-  ): boolean => {
-    return inContainer === barContainerName;
   };
 
   const isRemainingTimeValid = (newEvent: DayEvent) => {
