@@ -6,7 +6,7 @@ import { useDrag } from "@/Logics/Hooks/DragProvider.tsx";
 import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
 import SortableContainer from "../../../Logics/PlanDayPage/Bar/SortableArea.tsx";
 import { DayEventContainer } from "!/domain/model/DayEventContainer.ts";
-import { DragDayEvent } from "!/domain/viewModels/DragDayEvent.ts";
+import { DragDayEvent } from "!/domain/model/dragables/DragDayEvent.ts";
 
 type Props = {
   onPrevious: () => void;

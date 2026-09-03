@@ -1,48 +1,31 @@
 import { arrayMove as dndKitArrayMove } from "@dnd-kit/sortable";
-import { DragDayEvent } from "!/domain/viewModels/DragDayEvent.ts";
+import { DragDayEvent } from "!/domain/model/dragables/DragDayEvent.ts";
 import { DayEventContainer } from "!/domain/model/DayEventContainer.ts";
 import { DayEvent } from "!/domain/model/DayEvent.ts";
-import { RenderedBarContainer } from "!/domain/model/RenderedBarContainer.ts";
-import { BarPlaceholder } from "!/domain/model/BarPlaceHolder.ts";
+import { Dragable } from "!/domain/model/dragables/Dragable.ts";
+import { RenderedContainer } from "!/domain/model/RenderedContainer.ts";
 
 export const moveBetweenContainers = ({
-  eventContainers,
   oldContainer,
   oldIndex,
   newContainer,
   newIndex,
   item,
 }: Props) => {
-  const realEventOldIndex =
-    oldContainer.countItemsOfSameTypeBeforeIndex(oldIndex); // before removal
-
   oldContainer.removeItem(oldIndex);
-  newContainer.insertItem(item, newIndex);
-
-  const realEventNewIndex =
-    newContainer.countItemsOfSameTypeBeforeIndex(newIndex); // after insertion
-
-  const dayEvent: DayEvent =
-    eventContainers[oldContainer.getName()].getItems()[realEventOldIndex];
-
-  eventContainers[newContainer.getName()].insertItem(
-    dayEvent,
-    realEventNewIndex,
-  );
-  eventContainers[oldContainer.getName()].removeItem(realEventOldIndex);
+  newContainer.insertEvent(item, newIndex);
 };
 
 type Props = {
-  eventContainers: Record<string, DayEventContainer<DayEvent>>;
-  oldContainer: DayEventContainer<DragDayEvent> | RenderedBarContainer;
+  oldContainer: RenderedContainer;
   oldIndex: number;
-  newContainer: DayEventContainer<DragDayEvent> | RenderedBarContainer;
+  newContainer: RenderedContainer;
   newIndex: number;
-  item: DragDayEvent;
+  item: DayEvent;
 };
 
 export const arrayMove = (
-  array: (DragDayEvent | BarPlaceholder)[],
+  array: Dragable[],
   oldIndex: number,
   newIndex: number,
 ) => {

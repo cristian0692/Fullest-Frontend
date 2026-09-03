@@ -1,6 +1,7 @@
 import { Color } from "!/domain/model/enums/Color.ts";
+import { Dragable } from "!/domain/model/dragables/Dragable.ts";
 
-export class DragDayEvent {
+export class DragDayEvent extends Dragable {
   constructor(
     id: string,
     title: string,
@@ -8,20 +9,16 @@ export class DragDayEvent {
     durationInMinutes: number,
     startingTime?: Date,
   ) {
-    this.#id = id;
+    super(id);
     this.#title = title;
     this.#color = color;
     this.#durationInMinutes = durationInMinutes;
     this.#startingTime = startingTime;
   }
 
-  getId() {
-    return this.#id;
-  }
   getDuration() {
     return this.#durationInMinutes;
   }
-  #id: string;
   #title: string;
   #color: string;
   #durationInMinutes: number;

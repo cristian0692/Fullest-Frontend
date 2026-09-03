@@ -6,7 +6,7 @@ import {
 } from "@/Logics/Hooks/TimeProvider.tsx";
 import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
 import { useEffect, useState } from "react";
-import { DragDayEvent } from "!/domain/viewModels/DragDayEvent.ts";
+import { DragDayEvent } from "!/domain/model/dragables/DragDayEvent.ts";
 
 const calculateTotalEventTime = (
   barEvents: DragDayEvent[],
@@ -25,12 +25,15 @@ const RemainingTime = () => {
     wakeTime,
     sleepTime,
   );
-  const name = EVENT_CONTAINER_NAMES["barContent"];
+  const name = EVENT_CONTAINER_NAMES.barEvents;
 
   useEffect(() => {
     const totalMinutes = calculateTotalEventTime(
       eventContainers[name].getItems().map(item => item.toDragDayEvent()) ?? [],
-    );
+);
+
+
+
     const totalHours = Math.floor(totalMinutes / 60);
     const remainingMinutes = totalMinutes % 60;
     const totalTime: Date = makeTodayWithTime(totalHours, remainingMinutes);

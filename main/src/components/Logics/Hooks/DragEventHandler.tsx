@@ -36,7 +36,7 @@ const DragEventHandler = ({ children }: Props) => {
     setEventContainers,
     dayEvents: customEvents,
   } = useEvent();
-  const { setInserted, setQuantityMoved, dragContainers } = useDrag();
+  const { setInserted, setQuantityMoved } = useDrag();
   const { remainingTime } = useTime();
   const [lastMove, setLastMove] = useState<{
     out: string;
@@ -67,11 +67,11 @@ const DragEventHandler = ({ children }: Props) => {
     if (!overId || !active.data.current) {
       return;
     }
-    const activeContainer = active.data.current.sortable.containerId as string;
+    const activeContainer = active.data.current?.sortable?.containerId as string;
     const overContainer =
-      over.data.current?.sortable.containerId || (over.id as string);
-    const activeIndex = active.data.current?.sortable.index as number;
-    const overIndex = over.data.current?.sortable.index as number;
+      over.data.current?.sortable?.containerId || (over.id as string);
+    const activeIndex = active.data.current?.sortable?.index as number;
+    const overIndex = over.data.current?.sortable?.index as number;
 
     if (activeContainer !== overContainer) {
       const currentEvent = DayEvent.findEventById(
@@ -81,15 +81,15 @@ const DragEventHandler = ({ children }: Props) => {
       if (
         !currentEvent ||
         (!isRemainingTimeValid(currentEvent) &&
-          overContainer == EVENT_CONTAINER_NAMES.barContent)
+          overContainer == EVENT_CONTAINER_NAMES.barEvents)
       ) {
         return;
       }
       moveBetweenContainers({
         eventContainers,
-        oldContainer: dragContainers[activeContainer],
+        oldContainer: eventContainers[activeContainer],
         oldIndex: activeIndex,
-        newContainer: dragContainers[overContainer],
+        newContainer: eventContainers[overContainer],
         newIndex: overIndex,
         item: currentEvent.toDragDayEvent(),
       });
@@ -119,28 +119,20 @@ const DragEventHandler = ({ children }: Props) => {
           ? eventContainers[overContainer].getItems().length + 1
           : over.data.current?.sortable.index;
 
-      setEventContainers((eventGroup) => {
-        let newItems = eventGroup;
-        if (activeContainer === overContainer) {
-          newItems = {
-            ...eventGroup,
-            [overContainer]: arrayMove(
-              dragContainers[overContainer].getItems(),
-              activeIndex,
-              overIndex,
-            ),
-          };
-        }
-
-        return newItems;
-      });
+      dragContainers[overContainer].setItems(
+        arrayMove(
+          dragContainers[overContainer].getItems(),
+          activeIndex,
+          overIndex,
+        )
+      );
     }
 
     setActiveEvent(null);
   };
 
   const calculateInsertionType = (inContainer: string) => {
-    const barContainerName = EVENT_CONTAINER_NAMES.barContent;
+    const barContainerName = EVENT_CONTAINER_NAMES.barEvents;
     const items = eventContainers[barContainerName].getItems();
     if (items.length === 0) {
       console.error("contents of the bar not found!");

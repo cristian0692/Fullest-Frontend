@@ -68,7 +68,7 @@ const PlanDayPage = () => {
   };
 
   const handleComplete = () => {
-    const name = EVENT_CONTAINER_NAMES.barContent;
+    const name = EVENT_CONTAINER_NAMES.barEvents;
 
     const dragEvents = eventContainers[name];
 

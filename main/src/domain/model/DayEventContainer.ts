@@ -1,47 +1,51 @@
 import { DayEvent } from "!/domain/model/DayEvent.ts";
 
-export class DayEventContainer<T = DayEvent> {
-  protected items: T[];
+export class DayEventContainer {
+  protected events: DayEvent[];
   protected name: string;
 
-  constructor(name: string, items?: T[]) {
+  constructor(name: string, events?: DayEvent[]) {
     this.name = name;
-    this.items = items ?? [];
+    this.events = events ?? [];
   }
 
-  getItems() {
-    return this.items;
+  getEvents() {
+    return this.events;
+  }
+
+  setEvents(items: DayEvent[]) {
+    this.events = items;
   }
 
   getName() {
     return this.name;
   }
 
-  countItemsOfSameTypeBeforeIndex(
+  countItemsOfSameDayEventypeBeforeIndex(
     index: number,
-    referenceItem: T = this.items[index],
+    referenceItem: DayEvent = this.events[index],
   ) {
     let count = 0;
     for (let i = 0; i < index; i++) {
-      if (this.items[i]?.constructor === referenceItem?.constructor) count++;
+      if (this.events[i]?.constructor === referenceItem?.constructor) count++;
     }
     return count;
   }
 
-  insertItem(item: T, index?: number) {
+  insertEvent(event: DayEvent, index?: number) {
     if (index != undefined)
-      this.items = [
-        ...this.items.slice(0, index),
-        item,
-        ...this.items.slice(index),
+      this.events = [
+        ...this.events.slice(0, index),
+        event,
+        ...this.events.slice(index),
       ];
-    else this.items = [...this.items, item];
+    else this.events = [...this.events, event];
   }
 
-  removeItem(index: number) {
-    this.items = [
-      ...this.items.slice(0, index),
-      ...this.items.slice(index + 1),
+  removeEvent(index: number) {
+    this.events = [
+      ...this.events.slice(0, index),
+      ...this.events.slice(index + 1),
     ];
   }
 }

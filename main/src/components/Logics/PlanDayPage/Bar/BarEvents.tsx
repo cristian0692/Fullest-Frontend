@@ -4,17 +4,16 @@ import SortableContainer from "./SortableArea.tsx";
 import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
 import { useEffect } from "react";
 import { InsertionType, useDrag } from "../../Hooks/DragProvider.tsx";
-import { RenderedBarContainer } from "!/domain/model/RenderedBarContainer.ts";
+import { RenderedContainer } from "!/domain/model/RenderedContainer.ts";
 
-const BAR_EVENTS_NAME = EVENT_CONTAINER_NAMES.barContent;
+const BAR_EVENTS_NAME = EVENT_CONTAINER_NAMES.barEvents;
 
 const BarEvents = () => {
-  const { setEventContainers } = useEvent();
+  const { eventContainers } = useEvent();
   const {
     inserted,
     setInserted,
-    quantityMoved,
-    dragContainers  } = useDrag();
+    quantityMoved  } = useDrag();
   const { remainingTime } = useTime();
 
 
@@ -22,13 +21,13 @@ const BarEvents = () => {
     if (inserted == null) {
       return;
     }
-    const barEventsContainer = dragContainers[EVENT_CONTAINER_NAMES.barEvents];
-    if (!(barEventsContainer instanceof RenderedBarContainer)) {
+    const barEventsContainer = eventContainers[EVENT_CONTAINER_NAMES.barEvents];
+    if (!(barEventsContainer instanceof RenderedContainer)) {
       console.error("Failed to convert to RenderedBarContainer");
       return;
     }
 
-    const renderedBarContainer = barEventsContainer as RenderedBarContainer;
+    const renderedBarContainer = barEventsContainer as RenderedContainer;
 
     switch (inserted) {
       case InsertionType.initialize:
@@ -62,7 +61,7 @@ const BarEvents = () => {
     <div className="flex items-start justify-start w-full">
       <SortableContainer
         id={BAR_EVENTS_NAME}
-        items={dragContainers[BAR_EVENTS_NAME].getItems()}
+        items={eventContainers[BAR_EVENTS_NAME].getItems()}
         rounded
         extraStyling="w-full"
       />

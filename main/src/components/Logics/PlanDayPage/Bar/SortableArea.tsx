@@ -5,12 +5,11 @@ import {
 } from "@dnd-kit/sortable";
 
 import SortableEvent from "../SortableEvent.tsx";
-import { BarPlaceholder } from "!/domain/model/BarPlaceHolder.ts";
-import { DragDayEvent } from "!/domain/viewModels/DragDayEvent.ts";
+import { Dragable } from "!/domain/model/dragables/Dragable.ts";
 
 type Props = {
   id: string;
-  items: (BarPlaceholder | DragDayEvent)[];
+  items: (Dragable)[];
   extraStyling?: string;
   rounded?: boolean;
 };

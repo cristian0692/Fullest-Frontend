@@ -4,8 +4,8 @@ import { expect } from "@std/expect";
 import { AppProvider } from "@/Logics/Hooks/AppProvider.tsx";
 import BarEvents from "@/Logics/PlanDayPage/Bar/BarEvents.tsx";
 import RemainingTime from "@/Logics/PlanDayPage/Bar/RemainingTime.tsx";
-import { DragDayEvent } from "!/domain/viewModels/DragDayEvent.ts";
-import { RenderedBarContainer } from "!/domain/model/RenderedBarContainer.ts";
+import { DragDayEvent } from "!/domain/model/dragables/DragDayEvent.ts";
+import { RenderedBarContainer } from "!/domain/model/RenderedContainer.ts";
 import { DayEventContainer } from "!/domain/model/DayEventContainer.ts";
 import { getTimeMinutes } from "@/Logics/Hooks/TimeProvider.tsx";
 import { moveBetweenContainers } from "!/utils/array.ts";
@@ -50,7 +50,7 @@ Deno.test("moves an event to the bar, removes excess placeholders", () => {
 
   renderedBarContainer.fillEmptyBarWithPlaceholders(120); // 8 placeholders
 
-  const eventContainers: Record<string, DayEventContainer<DayEvent>> = {
+  const eventContainers: Record<string, DayEventContainer> = {
     [renderedContainer.getName()]: new DayEventContainer("Unplaced Events", [
       sampleEvent,
     ]),
@@ -58,12 +58,11 @@ Deno.test("moves an event to the bar, removes excess placeholders", () => {
   };
   //Act
   moveBetweenContainers({
-    eventContainers,
     oldContainer: renderedContainer,
     oldIndex: 0,
     newContainer: renderedBarContainer,
     newIndex: 3,
-    item: sampleEvent.toDragDayEvent(),
+    item: sampleEvent,
   });
 
   //Assert
