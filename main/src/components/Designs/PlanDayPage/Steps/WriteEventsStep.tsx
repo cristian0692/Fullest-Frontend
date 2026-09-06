@@ -10,6 +10,7 @@ import { useDrag } from "@/Logics/Hooks/DragProvider.tsx";
 import { v4 as uuidv4 } from "uuid";
 import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
 import { DayEvent } from "!/domain/model/DayEvent.ts";
+import { TimeValue } from "!/domain/model/TimeValue.ts";
 type Props = {
   onPrevious: () => void;
   onNext: () => void;
@@ -51,7 +52,7 @@ const WriteEventsStep = ({ onPrevious, onNext }: Props) => {
 
 
     setDescription("");
-    setDuration(makeTodayWithTime(1, 0));
+    setDuration(new TimeValue(60));
     setTitle("");
   };
 

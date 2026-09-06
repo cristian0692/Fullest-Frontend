@@ -5,6 +5,7 @@ import { DayEvent } from "!/domain/model/DayEvent.ts";
 import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
 import { RenderedContainer } from "!/domain/model/RenderedContainer.ts";
 import { RenderType } from "!/domain/model/enums/RenderType.ts";
+import { TimeValue } from "!/domain/model/TimeValue.ts";
 
 // 1. Define the context type
 type EventContextType = {
@@ -12,8 +13,8 @@ type EventContextType = {
   setTitle: React.Dispatch<React.SetStateAction<string>>;
   description: string;
   setDescription: React.Dispatch<React.SetStateAction<string>>;
-  duration: Date;
-  setDuration: React.Dispatch<React.SetStateAction<Date>>;
+  duration: TimeValue;
+  setDuration: React.Dispatch<React.SetStateAction<TimeValue>>;
   color: Color;
   setColor: React.Dispatch<React.SetStateAction<Color>>;
 
@@ -32,7 +33,7 @@ export const EventProvider = ({ children }: { children: React.ReactNode }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [color, setColor] = useState<Color>("bg-secondary");
-  const [duration, setDuration] = useState(makeTodayWithTime(1, 0));
+  const [duration, setDuration] = useState(new TimeValue(60));
   const [dayEvents, setDayEvents] = useState<DayEvent[]>([]);
   const [eventContainers, setEventContainers] = useState<
     Record<string, RenderedContainer>

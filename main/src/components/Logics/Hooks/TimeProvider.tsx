@@ -14,9 +14,6 @@ export const formatTime = (hours: number, minutes: number) => {
     </>
   );
 };
-export const getTimeMinutes = (time: Date) => {
-  return time.getHours() * 60 + time.getMinutes();
-};
 export const calculateTimeInterval = (startTime: Date, endTime: Date) => {
   const milliDiff = endTime.getTime() - startTime.getTime();
   const totalMinutes = Math.floor(milliDiff / (60 * 1000));

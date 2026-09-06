@@ -1,49 +1,25 @@
 import { useEffect, useRef, useState } from "react";
-import { makeTodayWithTime } from "../Hooks/TimeProvider.tsx";
+import { TimeValue } from "!/domain/model/TimeValue.ts";
 
 type Props = {
   color: string;
-  value: Date;
-  onChange: (time: Date) => void;
+  value: TimeValue;
+  onChange: (time: TimeValue) => void;
   max?: number;
   isDuration?: boolean;
 };
 
-type TimeOption = {
-  text: string;
-  value: Date;
-};
-
 function generateTimes(max: number, duration?: boolean) {
   return Array.from({ length: max * 4 + (duration ? 1 : 0) }, (_, i) => {
-    const minuteIndex = duration ? i + 1 : i; // skip the 0-minute mark for durations
+    const skipZeroValue = 1;
+
+    const minuteIndex = duration ? i + skipZeroValue : i;
     const hours = Math.floor(minuteIndex / 4);
     const minutes = (minuteIndex % 4) * 15;
-    const date = new Date();
-    date.setHours(hours, minutes, 0, 0);
+    const date = new TimeValue(minutes, hours);
 
-    const timeStr = date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
-
-    return {
-      text: timeStr,
-      value: date,
-    };
+    return date;
   });
-}
-
-function findTimeText(value: Date, times: TimeOption[]) {
-  if (!value) return "00:00";
-
-  const val = times.find(
-    (time) =>
-      time.value.getHours() === value.getHours() &&
-      time.value.getMinutes() === value.getMinutes(),
-  )?.text;
-  return val ? val : "00:00";
 }
 
 const TimeInput = ({ color, onChange, value, max = 24, isDuration }: Props) => {
@@ -55,9 +31,7 @@ const TimeInput = ({ color, onChange, value, max = 24, isDuration }: Props) => {
   const times = generateTimes(max, isDuration);
 
   const selectedIndex = times.findIndex(
-    (time) =>
-      time.value.getHours() === value.getHours() &&
-      time.value.getMinutes() === value.getMinutes(),
+    (time) => time.getTotalMinutes() === value.getTotalMinutes(),
   );
 
   const scrollToHour = (input: string) => {
@@ -72,9 +46,8 @@ const TimeInput = ({ color, onChange, value, max = 24, isDuration }: Props) => {
   };
 
   useEffect(() => {
-    if(!isOpen)
-      return
-    onChange(makeTodayWithTime(shortcutInput, 0));
+    if (!isOpen) return;
+    onChange(new TimeValue(shortcutInput));
 
     optionRefs.current[shortcutInput * 4]?.scrollIntoView({
       block: "center",
@@ -108,12 +81,10 @@ const TimeInput = ({ color, onChange, value, max = 24, isDuration }: Props) => {
     }
   }, [isOpen, selectedIndex]);
 
-  const handleSelect = (time: Date) => {
+  const handleSelect = (time: TimeValue) => {
     onChange(time);
     setIsOpen(false);
   };
-
-  const selectedText = findTimeText(value, times);
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -129,32 +100,32 @@ const TimeInput = ({ color, onChange, value, max = 24, isDuration }: Props) => {
         tabIndex={0}
         style={{ fontFamily: "Helvetica, Arial, sans-serif" }}
       >
-        <span>{selectedText}</span>
+        <span>{value.toString()}</span>
       </div>
       {/*------------------ Drop Down ------------------ */}
       {isOpen && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-gray-800 rounded-lg shadow-lg max-h-60 overflow-y-auto z-10 border border-gray-600">
           {times.map((time, index) => (
             <div
-              key={`${color}-${time.text}`}
+              key={`${color}-${time.toString()}`}
               ref={(el) => {
                 optionRefs.current[index] = el;
               }}
               className={`px-4 py-2 cursor-pointer transition-colors duration-150 ${
                 hoveredIndex === index
                   ? "bg-gray-700 text-white"
-                  : selectedText === time.text
-                  ? `${
-                    color != "transparent" ? color : "bg-gray-700"
-                  } text-white`
-                  : "text-gray-300 hover:bg-gray-700"
+                  : value.getTotalMinutes() === time.getTotalMinutes()
+                    ? `${
+                        color != "transparent" ? color : "bg-gray-700"
+                      } text-white`
+                    : "text-gray-300 hover:bg-gray-700"
               }`}
-              onClick={() => handleSelect(time.value)}
+              onClick={() => handleSelect(time)}
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(-1)}
               style={{ fontFamily: "Helvetica, Arial, sans-serif" }}
             >
-              {time.text}
+              {time.toString()}
             </div>
           ))}
         </div>

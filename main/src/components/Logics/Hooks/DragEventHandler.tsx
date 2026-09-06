@@ -22,7 +22,7 @@ import { arrayMove, moveBetweenContainers } from "!/utils/array.ts";
 import { useEvent } from "./EventProvider.tsx";
 import { useDrag } from "./DragProvider.tsx";
 import { EVENT_CONTAINER_NAMES } from "../../../data/globalData.ts";
-import { getTimeMinutes, useTime } from "./TimeProvider.tsx";
+import { useTime } from "./TimeProvider.tsx";
 import { DayEvent } from "!/domain/model/DayEvent.ts";
 
 type Props = {
@@ -31,11 +31,7 @@ type Props = {
 
 const DragEventHandler = ({ children }: Props) => {
   const { activeEvent, setActiveEvent } = useDrag();
-  const {
-    eventContainers,
-    setEventContainers,
-    dayEvents,
-  } = useEvent();
+  const { eventContainers, setEventContainers, dayEvents } = useEvent();
   const { setQuantityMoved } = useDrag();
   const { remainingTime } = useTime();
   const [lastMove, setLastMove] = useState<{
@@ -66,7 +62,8 @@ const DragEventHandler = ({ children }: Props) => {
     if (!overId || !active.data.current) {
       return;
     }
-    const activeContainer = active.data.current?.sortable?.containerId as string;
+    const activeContainer = active.data.current?.sortable
+      ?.containerId as string;
     const overContainer =
       over.data.current?.sortable?.containerId || (over.id as string);
     const activeIndex = active.data.current?.sortable?.index as number;
@@ -92,16 +89,13 @@ const DragEventHandler = ({ children }: Props) => {
         item: currentEvent,
       });
 
-
-      if(moveFailed){
-        return; 
+      if (moveFailed) {
+        return;
       }
       setEventContainers({ ...eventContainers });
 
-
-
       if (currentEvent) {
-        setQuantityMoved(getTimeMinutes(currentEvent.getDuration()));
+        setQuantityMoved(currentEvent.getDurationInMinutes());
         setLastMove({
           out: activeContainer,
           in: overContainer,
@@ -129,7 +123,7 @@ const DragEventHandler = ({ children }: Props) => {
           eventContainers[overContainer].getItems(),
           activeIndex,
           overIndex,
-        )
+        ),
       );
     }
 
@@ -137,7 +131,7 @@ const DragEventHandler = ({ children }: Props) => {
   };
 
   const isRemainingTimeValid = (newEvent: DayEvent) => {
-    return remainingTime - getTimeMinutes(newEvent.getDuration()) >= 0;
+    return remainingTime - newEvent.getDurationInMinutes() >= 0;
   };
   return (
     <DndContext

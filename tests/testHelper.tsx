@@ -27,3 +27,9 @@ export function setUpEvents(events: DayEvent[], extra?: React.ReactNode) {
   }
   return result;
 }
+
+
+
+export function calculateAmountOfPlaceholders(remainingTimeInMinutes: number){
+  return remainingTimeInMinutes / 15;
+}

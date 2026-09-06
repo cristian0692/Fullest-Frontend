@@ -1,6 +1,7 @@
 import { Color } from "!/domain/model/enums/Color.ts";
 import { DragDayEvent } from "!/domain/model/dragables/DragDayEvent.ts";
 import { getTimeMinutes } from "@/Logics/Hooks/TimeProvider.tsx";
+import { TimeValue } from "!/domain/model/TimeValue.ts";
 
 export class DayEvent {
   constructor(
@@ -8,7 +9,7 @@ export class DayEvent {
     title: string,
     description: string,
     color: Color,
-    duration: Date,
+    duration: TimeValue,
   ) {
     this.#id = id;
     this.#title = title;
@@ -25,6 +26,10 @@ export class DayEvent {
     return this.#duration;
   }
 
+  getDurationInMinutes() {
+    return this.#duration.getTotalMinutes();
+  }
+
   GetColor() {
     return this.#color;
   }
@@ -36,33 +41,40 @@ export class DayEvent {
     return this.#description;
   }
 
+  getStartTime() {
+    return this.#startTime;
+  }
+
+
+  setStartTime(startTime: TimeValue){
+    this.#startTime = startTime;
+  }
+
   toDragDayEvent(startTime?: Date) {
     return new DragDayEvent(
       this.#id,
       this.#title,
       this.#color,
-      getTimeMinutes(this.#duration),
+      this.#duration,
       startTime,
     );
   }
 
-  static findEventById (events: DayEvent[], id: string) {
-  const currentEvent = events.find((ev) => ev.getId() === id);
+  static findEventById(events: DayEvent[], id: string) {
+    const currentEvent = events.find((ev) => ev.getId() === id);
 
-  if (!currentEvent) {
-    return null;
+    if (!currentEvent) {
+      return null;
+    }
+
+    return currentEvent;
   }
-
-  return currentEvent;
-};
-
 
   #id: string;
   #title: string;
   #description: string;
   #color: Color;
-  #duration: Date;
-  #endTime?: string;
-  #startTime?: string;
+  #duration: TimeValue;
+  #startTime?: TimeValue;
   #segment?: number; //position on bar of the event if placed
 }

@@ -5,6 +5,7 @@ import WriteEventsStep from "@/Designs/PlanDayPage/Steps/WriteEventsStep.tsx";
 import { DayEvent } from "!/domain/model/DayEvent.ts";
 import { screen, fireEvent } from "@testing-library/react";
 import { expect } from "@std/expect";
+import { TimeValue } from "!/domain/model/TimeValue.ts";
 
 Deno.test(
   "Creating an event should add it to the default eventContainers",
@@ -17,8 +18,7 @@ Deno.test(
     );
 
     const eventId = "1";
-    const duration = new Date();
-    duration.setHours(1);
+    const duration = new TimeValue(60);
     const sampleEvent = new DayEvent(
       eventId,
       "new event",

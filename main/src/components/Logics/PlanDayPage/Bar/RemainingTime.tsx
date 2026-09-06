@@ -10,7 +10,7 @@ import { DragDayEvent } from "!/domain/model/dragables/DragDayEvent.ts";
 
 const calculateTotalEventTime = (barEvents: DragDayEvent[]) => {
   return barEvents.reduce<number>((acc, barEvent) => {
-    return acc + barEvent.getDuration();
+    return acc + barEvent.getDurationInMinutes();
   }, 0);
 };
 

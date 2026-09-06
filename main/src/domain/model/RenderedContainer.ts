@@ -10,12 +10,11 @@ export class RenderedContainer extends DayEventContainer {
   #items: Dragable[];
 
   #type: RenderType;
-  constructor(name: string, type?: RenderType) {
-    super(name, []);
-    this.#items = [];
+  constructor(name: string, type?: RenderType, items?: DayEvent[]) {
+    super(name, items ?? []);
+    this.#items = items?.map((item) => item.toDragDayEvent()) ?? [];
     this.#type = type ?? RenderType.Default;
   }
-
   insertUniquePlaceHolder() {
     for (let i = 0; i < RenderedContainer.MAX_PlACEHOLDERS; i++) {
       const id = "placeholder-" + i;
@@ -151,7 +150,6 @@ export class RenderedContainer extends DayEventContainer {
     return true;
   }
 
-
   moveEvent(oldIndex: number, newIndex: number) {
     const dragEvent = this.#items[oldIndex];
     this.#remove<Dragable>(this.#items, oldIndex);
@@ -160,7 +158,7 @@ export class RenderedContainer extends DayEventContainer {
 
   override insertEvent(dayEvent: DayEvent, index?: number) {
     const eventIndex = this.calculateEventIndex(index);
-    const eventDuration = dayEvent.toDragDayEvent().getDuration();
+    const eventDuration = dayEvent.toDragDayEvent().getDurationInMinutes();
     if (
       this.countPlaceholders() * 15 < eventDuration &&
       this.#type == RenderType.Bar
@@ -185,7 +183,7 @@ export class RenderedContainer extends DayEventContainer {
     this.#remove<DayEvent>(this.events, eventIndex);
 
     if (this.#type == RenderType.Bar)
-      this.addMissingPlaceholdersAfterRemoval(index, dragEvent.getDuration());
+      this.addMissingPlaceholdersAfterRemoval(index, dragEvent.getDurationInMinutes());
   }
 
   removeItem(index: number) {

@@ -4,13 +4,12 @@ import { expect } from "@std/expect";
 import { AppProvider } from "@/Logics/Hooks/AppProvider.tsx";
 import BarEvents from "@/Logics/PlanDayPage/Bar/BarEvents.tsx";
 import RemainingTime from "@/Logics/PlanDayPage/Bar/RemainingTime.tsx";
-import { DragDayEvent } from "!/domain/model/dragables/DragDayEvent.ts";
-import { RenderedBarContainer } from "!/domain/model/RenderedContainer.ts";
-import { DayEventContainer } from "!/domain/model/DayEventContainer.ts";
-import { getTimeMinutes } from "@/Logics/Hooks/TimeProvider.tsx";
+import { RenderedContainer } from "!/domain/model/RenderedContainer.ts";
 import { moveBetweenContainers } from "!/utils/array.ts";
-import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
 import { DayEvent } from "!/domain/model/DayEvent.ts";
+import { RenderType } from "!/domain/model/enums/RenderType.ts";
+import { calculateAmountOfPlaceholders } from "./testHelper.tsx";
+import { TimeValue } from "!/domain/model/TimeValue.ts";
 
 Deno.test("renders 16 placeholders by default", () => {
   //Arrange & Act
@@ -28,10 +27,10 @@ Deno.test("renders 16 placeholders by default", () => {
 
 Deno.test("moves an event to the bar, removes excess placeholders", () => {
   //Arrange
+  const totalTimeAmountInMinutes = 240;
   const eventId = "1";
-  const duration = new Date();
-  duration.setHours(1);
-  duration.setMinutes(0);
+  const duration = new TimeValue(60);
+
   const sampleEvent = new DayEvent(
     eventId,
     "new event",
@@ -39,52 +38,52 @@ Deno.test("moves an event to the bar, removes excess placeholders", () => {
     "bg-green-500",
     duration,
   );
-
-  const renderedContainer: DayEventContainer<DragDayEvent> =
-    new DayEventContainer(EVENT_CONTAINER_NAMES.localEvents, [
-      sampleEvent.toDragDayEvent(),
-    ]);
-  const renderedBarContainer: RenderedBarContainer = new RenderedBarContainer(
-    EVENT_CONTAINER_NAMES.barEvents,
-  );
-
-  renderedBarContainer.fillEmptyBarWithPlaceholders(120); // 8 placeholders
-
-  const eventContainers: Record<string, DayEventContainer> = {
-    [renderedContainer.getName()]: new DayEventContainer("Unplaced Events", [
-      sampleEvent,
-    ]),
-    [renderedBarContainer.getName()]: new DayEventContainer("Bar Events"),
+  const unplacedContainerName = "Unplaced Events";
+  const barContainerName = "Bar Events";
+  const eventContainers: Record<string, RenderedContainer> = {
+    [unplacedContainerName]: new RenderedContainer(
+      unplacedContainerName,
+      RenderType.Default,
+      [sampleEvent],
+    ),
+    [barContainerName]: new RenderedContainer("Bar Events", RenderType.Bar),
   };
+  const amountOfPlaceholders = calculateAmountOfPlaceholders(
+    totalTimeAmountInMinutes - sampleEvent.getDurationInMinutes(),
+  );
+  const amountOfEvents = 1;
+
+  eventContainers[barContainerName].fillEmptyBarWithPlaceholders(
+    totalTimeAmountInMinutes,
+  );
   //Act
   moveBetweenContainers({
-    oldContainer: renderedContainer,
+    oldContainer: eventContainers[unplacedContainerName],
     oldIndex: 0,
-    newContainer: renderedBarContainer,
+    newContainer: eventContainers[barContainerName],
     newIndex: 3,
     item: sampleEvent,
   });
 
   //Assert
-  expect(
-    eventContainers[renderedBarContainer.getName()].getItems().length,
-  ).toBe(1);
-  expect(renderedBarContainer.getItems().length).toBe(5);
-  expect(renderedContainer.getItems().length).toBe(0);
-  expect(eventContainers[renderedContainer.getName()].getItems().length).toBe(
-    0,
+  expect(eventContainers[barContainerName].getEvents().length).toBe(1);
+  expect(eventContainers[barContainerName].getItems().length).toBe(
+    amountOfPlaceholders + amountOfEvents,
   );
-  expect(
-    eventContainers[renderedBarContainer.getName()].getItems()[0].getId(),
-  ).toBe(eventId);
+
+  expect(eventContainers[unplacedContainerName].getItems().length).toBe(0);
+
+  expect(eventContainers[barContainerName].getEvents()[0].getId()).toBe(
+    sampleEvent.getId(),
+  );
 });
 
 Deno.test("moves event out of the bar, adds missing placeholders", () => {
   //Arrange
+  const totalTimeInMinutes = 120;
   const eventId = "1";
-  const duration = new Date();
-  duration.setHours(1);
-  duration.setMinutes(0);
+  const duration = new TimeValue(60);
+
   const sampleEvent = new DayEvent(
     eventId,
     "new event",
@@ -93,28 +92,31 @@ Deno.test("moves event out of the bar, adds missing placeholders", () => {
     duration,
   );
 
-  const renderedContainer: DayEventContainer<DragDayEvent> =
-    new DayEventContainer(EVENT_CONTAINER_NAMES.localEvents);
-  const renderedBarContainer: RenderedBarContainer = new RenderedBarContainer(
-    EVENT_CONTAINER_NAMES.barEvents
-  );
-
-  renderedBarContainer.fillEmptyBarWithPlaceholders(120); // 8 placeholders
-  renderedBarContainer.insertItem(sampleEvent.toDragDayEvent(), 3); // add event to the bar
-
-  const eventContainers: Record<string, DayEventContainer<DayEvent>> = {
-    [renderedContainer.getName()]: new DayEventContainer("Unplaced Events"),
-    [renderedBarContainer.getName()]: new DayEventContainer("Bar Events", [
-      sampleEvent,
-    ]),
+  const unplacedContainerName = "Unplaced Events";
+  const barContainerName = "Bar Events";
+  const eventContainers: Record<string, RenderedContainer> = {
+    [unplacedContainerName]: new RenderedContainer(
+      unplacedContainerName,
+      RenderType.Default,
+      [sampleEvent],
+    ),
+    [barContainerName]: new RenderedContainer("Bar Events", RenderType.Bar),
   };
+
+  eventContainers[barContainerName].fillEmptyBarWithPlaceholders(totalTimeInMinutes);
+  eventContainers[barContainerName].insertEvent(sampleEvent, 3);
   //Act
   moveBetweenContainers({
-    eventContainers,
-    oldContainer: renderedBarContainer,
+    oldContainer: eventContainers[barContainerName],
     oldIndex: 0,
-    newContainer: renderedContainer,
+    newContainer: eventContainers[unplacedContainerName],
     newIndex: 3,
-    item: sampleEvent.toDragDayEvent(),
+    item: sampleEvent,
   });
+
+
+  
+
+
+
 });
