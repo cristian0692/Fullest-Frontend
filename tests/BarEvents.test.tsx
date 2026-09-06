@@ -27,7 +27,7 @@ Deno.test("renders 16 placeholders by default", () => {
 
 Deno.test("moves an event to the bar, removes excess placeholders", () => {
   //Arrange
-  const totalTimeAmountInMinutes = 240;
+  const totalTimeInMinutes = 240;
   const eventId = "1";
   const duration = new TimeValue(60);
 
@@ -49,12 +49,12 @@ Deno.test("moves an event to the bar, removes excess placeholders", () => {
     [barContainerName]: new RenderedContainer("Bar Events", RenderType.Bar),
   };
   const amountOfPlaceholders = calculateAmountOfPlaceholders(
-    totalTimeAmountInMinutes - sampleEvent.getDurationInMinutes(),
+    totalTimeInMinutes - sampleEvent.getDurationInMinutes(),
   );
   const amountOfEvents = 1;
 
   eventContainers[barContainerName].fillEmptyBarWithPlaceholders(
-    totalTimeAmountInMinutes,
+    totalTimeInMinutes,
   );
   //Act
   moveBetweenContainers({
@@ -96,27 +96,34 @@ Deno.test("moves event out of the bar, adds missing placeholders", () => {
   const barContainerName = "Bar Events";
   const eventContainers: Record<string, RenderedContainer> = {
     [unplacedContainerName]: new RenderedContainer(
-      unplacedContainerName,
-      RenderType.Default,
-      [sampleEvent],
+      unplacedContainerName
     ),
     [barContainerName]: new RenderedContainer("Bar Events", RenderType.Bar),
   };
 
-  eventContainers[barContainerName].fillEmptyBarWithPlaceholders(totalTimeInMinutes);
+  eventContainers[barContainerName].fillEmptyBarWithPlaceholders(
+    totalTimeInMinutes,
+  );
   eventContainers[barContainerName].insertEvent(sampleEvent, 3);
+  const amountOfPlaceholders = calculateAmountOfPlaceholders(totalTimeInMinutes);
+  
+  const eventIndex = eventContainers[barContainerName].findEventInItems(eventId);
   //Act
   moveBetweenContainers({
     oldContainer: eventContainers[barContainerName],
-    oldIndex: 0,
+    oldIndex: eventIndex,
     newContainer: eventContainers[unplacedContainerName],
-    newIndex: 3,
+    newIndex: 0,
     item: sampleEvent,
   });
 
+  //Assert
+  expect(eventContainers[barContainerName].getEvents().length).toBe(0);
+  expect(eventContainers[barContainerName].getItems().length).toBe(amountOfPlaceholders);
 
-  
+  expect(eventContainers[unplacedContainerName].getItems().length).toBe(1);
 
-
-
+  expect(eventContainers[unplacedContainerName].getEvents()[0].getId()).toBe(
+    sampleEvent.getId(),
+  );
 });

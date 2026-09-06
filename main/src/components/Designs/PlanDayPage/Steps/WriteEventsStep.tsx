@@ -3,7 +3,6 @@ import TimeInput from "@/Logics/Inputs/TimeInput.tsx";
 import Heading from "@/Designs/PlanDayPage/Heading.tsx";
 import ColorPicker from "@/Logics/ColorPicker/ColorPicker.tsx";
 import { useEvent } from "@/Logics/Hooks/EventProvider.tsx";
-import { makeTodayWithTime } from "@/Logics/Hooks/TimeProvider.tsx";
 import EventList from "@/Logics/PlanDayPage/EventList.tsx";
 import { useState } from "react";
 import { useDrag } from "@/Logics/Hooks/DragProvider.tsx";

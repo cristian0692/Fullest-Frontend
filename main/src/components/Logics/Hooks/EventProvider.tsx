@@ -1,5 +1,4 @@
 import { createContext, useContext, useState } from "react";
-import { makeTodayWithTime } from "@/Logics/Hooks/TimeProvider.tsx";
 import { Color } from "!/domain/model/enums/Color.ts";
 import { DayEvent } from "!/domain/model/DayEvent.ts";
 import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";

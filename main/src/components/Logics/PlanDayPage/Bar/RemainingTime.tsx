@@ -1,12 +1,12 @@
 import { useEvent } from "@/Logics/Hooks/EventProvider.tsx";
 import {
   calculateTimeInterval,
-  makeTodayWithTime,
   useTime,
 } from "@/Logics/Hooks/TimeProvider.tsx";
 import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
 import { useEffect, useState } from "react";
 import { DragDayEvent } from "!/domain/model/dragables/DragDayEvent.ts";
+import { TimeValue } from "!/domain/model/TimeValue.ts";
 
 const calculateTotalEventTime = (barEvents: DragDayEvent[]) => {
   return barEvents.reduce<number>((acc, barEvent) => {
@@ -19,10 +19,7 @@ const RemainingTime = () => {
   const { eventContainers } = useEvent();
   const [isDisplayError, setIsDisplayError] = useState(false);
   const [remainingTotalTime, setRemainingTotalTime] = useState("00:00"); //the text that is displayed
-  const { isError, date: totalDayTime } = calculateTimeInterval(
-    wakeTime,
-    sleepTime,
-  );
+  const totalDayTime = calculateTimeInterval(wakeTime, sleepTime);
   const name = EVENT_CONTAINER_NAMES.barEvents;
 
   useEffect(() => {
@@ -30,15 +27,12 @@ const RemainingTime = () => {
       eventContainers[name].getEvents().map((item) => item.toDragDayEvent()) ??
         [],
     );
-
-    const totalHours = Math.floor(totalMinutes / 60);
-    const remainingMinutes = totalMinutes % 60;
-    const totalTime: Date = makeTodayWithTime(totalHours, remainingMinutes);
+    const totalTime: TimeValue = new TimeValue(totalMinutes);
 
     const result = calculateTimeInterval(totalTime, totalDayTime);
-    setRemainingTotalTime(result.text);
-    setIsDisplayError(isError || result.isError);
-    setRemainingTime(result.totalMinutes);
+    setRemainingTotalTime(result.toString());
+    setIsDisplayError(result.getTotalMinutes() < 0);
+    setRemainingTime(result.getTotalMinutes());
   }, [eventContainers[name].getItems().length, wakeTime, sleepTime]);
   return (
     <div

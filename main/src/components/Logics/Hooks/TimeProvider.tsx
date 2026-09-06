@@ -1,11 +1,5 @@
 import { createContext, useContext, useState } from "react";
-
-// helper to create today's date with specific time
-export const  makeTodayWithTime = (hours: number, minutes: number) => {
-  const d = new Date();
-  d.setHours(hours, minutes, 0, 0);
-  return d;
-};
+import { TimeValue } from "!/domain/model/TimeValue.ts";
 
 export const formatTime = (hours: number, minutes: number) => {
   return (
@@ -14,30 +8,22 @@ export const formatTime = (hours: number, minutes: number) => {
     </>
   );
 };
-export const calculateTimeInterval = (startTime: Date, endTime: Date) => {
-  const milliDiff = endTime.getTime() - startTime.getTime();
-  const totalMinutes = Math.floor(milliDiff / (60 * 1000));
-  const remMinutes = totalMinutes % 60;
-  const totalHours = Math.floor(totalMinutes / 60);
+export const calculateTimeInterval = (
+  smallValue: TimeValue,
+  bigValue: TimeValue,
+) => {
+  const newTime = bigValue.clone();
+  newTime.substractTimeValue(smallValue);
 
-  const isError = totalHours + remMinutes / 60 < 0;
-
-  return {
-    text: `${totalHours}:${remMinutes.toString().padStart(2, "0")}`,
-    date: makeTodayWithTime(totalHours, remMinutes),
-    hours: totalHours,
-    minutes: remMinutes,
-    totalMinutes: totalMinutes,
-    isError,
-  };
+  return newTime;
 };
 
 // 1. Define the context type
 type TimeContextType = {
-  wakeTime: Date;
-  setWakeTime: React.Dispatch<React.SetStateAction<Date>>;
-  sleepTime: Date;
-  setSleepTime: React.Dispatch<React.SetStateAction<Date>>;
+  wakeTime: TimeValue;
+  setWakeTime: React.Dispatch<React.SetStateAction<TimeValue>>;
+  sleepTime: TimeValue;
+  setSleepTime: React.Dispatch<React.SetStateAction<TimeValue>>;
   timeSegments: number;
   setTimeSegments: React.Dispatch<React.SetStateAction<number>>;
   remainingTime: number; //minutes
@@ -49,8 +35,8 @@ const TimeContext = createContext<TimeContextType | null>(null);
 
 // 3. Provider component
 export const TimeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [wakeTime, setWakeTime] = useState(() => makeTodayWithTime(18, 0));
-  const [sleepTime, setSleepTime] = useState(() => makeTodayWithTime(22, 0));
+  const [wakeTime, setWakeTime] = useState(() => new TimeValue(0, 18));
+  const [sleepTime, setSleepTime] = useState(() => new TimeValue(0, 22));
   const [timeSegments, setTimeSegments] = useState(0);
   const [remainingTime, setRemainingTime] = useState(NaN);
 

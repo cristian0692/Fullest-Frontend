@@ -6,7 +6,6 @@ import { useEvent } from "../Hooks/EventProvider.tsx";
 import { barBorder, barHeight } from "!/data/globalData.ts";
 import { useDrag } from "../Hooks/DragProvider.tsx";
 import { useEventWidth } from "../Hooks/EventWidthProvider.tsx";
-import { getTimeMinutes } from "../Hooks/TimeProvider.tsx";
 import { DayEvent } from "!/domain/model/DayEvent.ts";
 
 type Props = {
@@ -60,7 +59,7 @@ const SortableEvent = (
   }
 
   const eventWidth = `${
-    getTimeMinutes(currentEvent.getDuration()) * pixelsPer15Minutes / 15
+    currentEvent.getDurationInMinutes()/ 15 * pixelsPer15Minutes 
   }px`;
   style.width = eventWidth;
   return (

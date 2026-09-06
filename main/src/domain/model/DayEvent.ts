@@ -1,6 +1,5 @@
 import { Color } from "!/domain/model/enums/Color.ts";
 import { DragDayEvent } from "!/domain/model/dragables/DragDayEvent.ts";
-import { getTimeMinutes } from "@/Logics/Hooks/TimeProvider.tsx";
 import { TimeValue } from "!/domain/model/TimeValue.ts";
 
 export class DayEvent {

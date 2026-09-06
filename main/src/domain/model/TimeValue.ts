@@ -1,8 +1,10 @@
+import { time } from "node:console";
+
 export class TimeValue {
   constructor(minutes: number, hours?: number) {
     this.#totalMinutes = minutes;
 
-    this.#totalMinutes += hours ?? 0;
+    this.#totalMinutes += (hours ?? 0) * 60;
   }
 
   getMinutes() {
@@ -22,13 +24,25 @@ export class TimeValue {
     const minutes = this.getMinutes().toString().padStart(2, "0");
     return `${hours}:${minutes}`;
   }
-  add(minutes: number) {
+  addMinutes(minutes: number) {
     this.#totalMinutes += minutes;
   }
 
-  substract(minutes: number) {
+  addTimeValue(timeValue: TimeValue) {
+    this.#totalMinutes += timeValue.getTotalMinutes();
+  }
+
+  substractMinutes(minutes: number) {
     this.#totalMinutes -= minutes;
   }
 
+  substractTimeValue(timeValue: TimeValue) {
+    this.#totalMinutes -= timeValue.getTotalMinutes();
+  }
+
+  
+  clone(): TimeValue {
+    return new TimeValue(this.#totalMinutes);
+  }
   #totalMinutes: number;
 }

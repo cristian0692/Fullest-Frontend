@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { calculateTimeInterval } from "./TimeProvider.tsx";
+import { TimeValue } from "!/domain/model/TimeValue.ts";
 // 1. Define the context type
 type EventWidthContextType = {
   barWidth: number;
@@ -39,14 +40,12 @@ export const useEventWidth = () => {
 };
 
 export const calculatePixelPer15Minutes = (
-  startTime: Date,
-  endTime: Date,
+  startTime: TimeValue,
+  endTime: TimeValue,
   barWidth: number,
 ) => {
-  const { hours, minutes, isError } = calculateTimeInterval(startTime, endTime);
+  const interval: TimeValue = calculateTimeInterval(startTime, endTime);
 
-  if (isError) {
-    return 0;
-  }
-  return barWidth / ((hours * 60 + minutes) / 15);
+
+  return barWidth / ((interval.getTotalMinutes()) / 15);
 };

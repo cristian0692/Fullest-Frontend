@@ -1,5 +1,4 @@
 import {
-  formatTime,
   useTime,
 } from "@/Logics/Hooks/TimeProvider.tsx";
 import BarEvents from "@/Logics/PlanDayPage/Bar/BarEvents.tsx";
@@ -11,9 +10,9 @@ const MainBar = () => {
   return (
     <div className="w-full flex flex-col gap-3">
       <div className="text-medium text-white flex justify-between">
-        <div>{formatTime(wakeTime.getHours(), wakeTime.getMinutes())}</div>
+        <div>{wakeTime.toString()}</div>
         <RemainingTime />
-        <div>{formatTime(sleepTime.getHours(), sleepTime.getMinutes())}</div>
+        <div>{sleepTime.toString()}</div>
       </div>
 
       <div

@@ -25,7 +25,7 @@ const EventList = ({ events }: Props) => {
             <div className="flex gap-1">
               <div className="text-primary">Duration:</div>
               {formatTime(
-                event.getDuration().getHours(),
+                event.getDuration().getHour(),
                 event.getDuration().getMinutes()
               )}
             </div>

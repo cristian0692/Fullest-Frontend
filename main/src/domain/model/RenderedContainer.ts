@@ -185,7 +185,9 @@ export class RenderedContainer extends DayEventContainer {
     if (this.#type == RenderType.Bar)
       this.addMissingPlaceholdersAfterRemoval(index, dragEvent.getDurationInMinutes());
   }
-
+  findEventInItems(eventId: string){
+    return this.#items.findIndex(item => item.getId() === eventId);
+  }
   removeItem(index: number) {
     const dragEvent: Dragable = this.#items[index];
 
