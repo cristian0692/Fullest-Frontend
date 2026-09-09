@@ -118,7 +118,7 @@ const DragEventHandler = ({ children }: Props) => {
           ? eventContainers[overContainer].getItems().length
           : over.data.current?.sortable.index;
 
-      eventContainers[overContainer].setItems(
+      eventContainers[overContainer].setEvents(
         arrayMove(
           eventContainers[overContainer].getItems(),
           activeIndex,
