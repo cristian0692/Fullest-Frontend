@@ -17,7 +17,7 @@ import type {
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 
 import CustomEvent from "@/Logics/PlanDayPage/CustomEvent.tsx";
-import { arrayMove, moveBetweenContainers } from "!/utils/array.ts";
+import { moveBetweenContainers } from "!/utils/array.ts";
 
 import { useEvent } from "./EventProvider.tsx";
 import { useDrag } from "./DragProvider.tsx";
@@ -72,7 +72,7 @@ const DragEventHandler = ({ children }: Props) => {
     if (activeContainer !== overContainer) {
       const currentEvent = DayEvent.findEventById(
         dayEvents,
-        eventContainers[activeContainer].getItems()[activeIndex].getId(),
+        eventContainers[activeContainer].getDragables()[activeIndex].getId(),
       );
       if (
         !currentEvent ||
@@ -115,16 +115,10 @@ const DragEventHandler = ({ children }: Props) => {
       const activeIndex = active.data.current.sortable.index;
       const overIndex =
         over.id in eventContainers
-          ? eventContainers[overContainer].getItems().length
+          ? eventContainers[overContainer].getDragables().length
           : over.data.current?.sortable.index;
 
-      eventContainers[overContainer].setEvents(
-        arrayMove(
-          eventContainers[overContainer].getItems(),
-          activeIndex,
-          overIndex,
-        ),
-      );
+      eventContainers[overContainer].moveEvent(activeIndex, overIndex);
     }
 
     setActiveEvent(null);

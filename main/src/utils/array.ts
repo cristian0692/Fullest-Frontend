@@ -11,6 +11,11 @@ export const moveBetweenContainers = ({
   item,
 }: Props) => {
   try{
+
+   if(!(item instanceof DayEvent))
+    throw new Error("item is not a dayEvent");
+
+   
   newContainer.insertEvent(item, newIndex);
   oldContainer.removeEvent(oldIndex);
   return false;

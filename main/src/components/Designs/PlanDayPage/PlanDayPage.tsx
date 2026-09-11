@@ -72,7 +72,7 @@ const PlanDayPage = () => {
 
     const dragEvents = eventContainers[name];
 
-    const events: (DayEvent | undefined)[] = dragEvents.getItems().map((dragEvent) => (
+    const events: (DayEvent | undefined)[] = dragEvents.getDragables().map((dragEvent) => (
       dayEvents.find((event) => event.getId() == dragEvent.getId())
     ));
     if (!events) {

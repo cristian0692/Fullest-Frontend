@@ -8,7 +8,7 @@ export class TimeValue {
   }
 
   getMinutes() {
-    return this.#totalMinutes % 60;
+    return Math.abs(this.#totalMinutes % 60);
   }
 
   getHour() {
@@ -40,7 +40,6 @@ export class TimeValue {
     this.#totalMinutes -= timeValue.getTotalMinutes();
   }
 
-  
   clone(): TimeValue {
     return new TimeValue(this.#totalMinutes);
   }

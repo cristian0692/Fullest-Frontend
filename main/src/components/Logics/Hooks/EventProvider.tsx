@@ -5,6 +5,7 @@ import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
 import { RenderedContainer } from "!/domain/model/RenderedContainer.ts";
 import { RenderType } from "!/domain/model/enums/RenderType.ts";
 import { TimeValue } from "!/domain/model/TimeValue.ts";
+import { RenderedBarContainer } from "!/domain/model/RenderedBarContainer.ts";
 
 // 1. Define the context type
 type EventContextType = {
@@ -40,9 +41,9 @@ export const EventProvider = ({ children }: { children: React.ReactNode }) => {
     [EVENT_CONTAINER_NAMES.localEvents]: new RenderedContainer(
       EVENT_CONTAINER_NAMES.localEvents,
     ),
-    [EVENT_CONTAINER_NAMES.barEvents]: new RenderedContainer(
+    [EVENT_CONTAINER_NAMES.barEvents]: new RenderedBarContainer(
       EVENT_CONTAINER_NAMES.barEvents,
-      RenderType.Bar,
+      new TimeValue(0),
     ),
   });
 

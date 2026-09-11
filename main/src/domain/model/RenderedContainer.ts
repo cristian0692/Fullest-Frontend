@@ -1,4 +1,3 @@
-import { BarPlaceholder } from "!/domain/model/dragables/BarPlaceHolder.ts";
 import { DayEventContainer } from "!/domain/model/DayEventContainer.ts";
 import { DayEvent } from "!/domain/model/DayEvent.ts";
 import { Dragable } from "!/domain/model/dragables/Dragable.ts";
@@ -11,9 +10,7 @@ export class RenderedContainer extends DayEventContainer {
   }
 
   moveEvent(oldIndex: number, newIndex: number) {
-    const dayEvent = this.events[oldIndex];
-    this.remove<DayEvent>(this.events, oldIndex);
-    this.insert<DayEvent>(this.events, dayEvent, newIndex);
+    this.move<DayEvent>(this.events, oldIndex, newIndex);
   }
 
   override insertEvent(dayEvent: DayEvent, index?: number) {
@@ -33,8 +30,22 @@ export class RenderedContainer extends DayEventContainer {
     array.splice(index, 1);
   }
 
-  getItems(): Dragable[] {
+  protected move<T>(array: T[], oldIndex: number, newIndex: number) {
+    const item = array[oldIndex];
+    this.remove<T>(array, oldIndex);
+    this.insert<T>(array, item, newIndex);
+  }
+
+  findEventIdInDragables(id: string): number {
+    return this.events.findIndex((event) => event.getId() === id);
+  }
+
+  getDragables(): Dragable[] {
     return this.events.map((event) => event.toDragDayEvent());
+  }
+
+  toEventIndex(index: number): number {
+    throw new Error("toEventIndex method should be implemented in subclasses");
   }
 
 

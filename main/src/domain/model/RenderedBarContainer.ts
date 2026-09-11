@@ -6,16 +6,16 @@ import { BarPlaceholder } from "!/domain/model/dragables/BarPlaceHolder.ts";
 import { TimeValue } from "!/domain/model/TimeValue.ts";
 
 export class RenderedBarContainer extends RenderedContainer {
-  #items: Dragable[];
+  #dragables: Dragable[];
   constructor(name: string, totalTime: TimeValue, items?: DayEvent[]) {
     super(name, items ?? []);
-    this.#items = items?.map((item) => item.toDragDayEvent()) ?? [];
+    this.#dragables = items?.map((item) => item.toDragDayEvent()) ?? [];
 
-    this.fillEmptyBarWithPlaceholders(totalTime);
+    this.adjustBarWithPlaceholders(totalTime);
   }
 
-  fillEmptyBarWithPlaceholders(remainingTime: TimeValue) {
-    const placeholderTotalTime = this.#items.reduce((acc, currentValue) => {
+  adjustBarWithPlaceholders(remainingTime: TimeValue) {
+    const placeholderTotalTime = this.#dragables.reduce((acc, currentValue) => {
       if (currentValue instanceof BarPlaceholder) {
         return acc + RenderedContainer.PLACEHOLDER_DURATION;
       } else return acc;
@@ -27,7 +27,7 @@ export class RenderedBarContainer extends RenderedContainer {
         i < (remainingTime.getTotalMinutes() - placeholderTotalTime) / 15;
         i++
       ) {
-        this.#items.push(this.insertUniquePlaceHolder());
+        this.#dragables.push(this.insertUniquePlaceHolder());
       }
     } else {
       for (
@@ -50,13 +50,13 @@ export class RenderedBarContainer extends RenderedContainer {
   }
 
   getAllPlaceHoldersId() {
-    return this.#items
+    return this.#dragables
       .filter((barEvent) => barEvent instanceof BarPlaceholder)
       .map((barEvent) => barEvent.getId());
   }
 
   countPlaceholders() {
-    return this.#items.reduce((acc, item) => {
+    return this.#dragables.reduce((acc, item) => {
       if (item instanceof BarPlaceholder) {
         return acc + 1;
       } else return acc;
@@ -64,7 +64,7 @@ export class RenderedBarContainer extends RenderedContainer {
   }
 
   removeLastPlaceHolder() {
-    const newRenderedContainer = [...this.#items];
+    const newRenderedContainer = [...this.#dragables];
     let j = newRenderedContainer.length - 1;
     while (j >= 0) {
       const currentEvent = newRenderedContainer[j];
@@ -75,12 +75,12 @@ export class RenderedBarContainer extends RenderedContainer {
         j -= 1;
       }
     }
-    this.#items = newRenderedContainer;
+    this.#dragables = newRenderedContainer;
   }
 
   addMissingPlaceholdersAfterRemoval(index: number, minutesRemoved: number) {
     for (let i = 0; i < minutesRemoved / 15; i++) {
-      this.insert<Dragable>(this.#items, this.insertUniquePlaceHolder(), index);
+      this.insert<Dragable>(this.#dragables, this.insertUniquePlaceHolder(), index);
     }
     index += 1;
   }
@@ -132,35 +132,31 @@ export class RenderedBarContainer extends RenderedContainer {
     let quantity = 1;
     if (isDirectionLeft === true) {
       while (!(index - quantity < 0)) {
-        if (this.#items[index - quantity] instanceof DragDayEvent) {
+        if (this.#dragables[index - quantity] instanceof DragDayEvent) {
           quantity += 1;
           continue;
         }
-        this.remove(this.#items, index - quantity);
+        this.remove(this.#dragables, index - quantity);
 
         return false;
       }
     } else {
-      while (!(index + quantity >= this.#items.length)) {
-        if (this.#items[index + quantity] instanceof DragDayEvent) {
+      while (!(index + quantity >= this.#dragables.length)) {
+        if (this.#dragables[index + quantity] instanceof DragDayEvent) {
           quantity += 1;
           continue;
         }
-        this.remove(this.#items, index + quantity);
+        this.remove(this.#dragables, index + quantity);
         return false;
       }
     }
     return true;
   }
-  calculateEventIndex(index?: number) {
+  override toEventIndex(index: number) {
     let eventIndex = 0;
 
-    if (index == undefined) {
-      return this.events.length;
-    }
-
     while (index > 0) {
-      const item = this.#items[index - 1];
+      const item = this.#dragables[index - 1];
       if (item instanceof DragDayEvent) {
         eventIndex += 1;
       }
@@ -171,44 +167,52 @@ export class RenderedBarContainer extends RenderedContainer {
   }
 
   override moveEvent(oldIndex: number, newIndex: number) {
-    const dragEvent = this.#items[oldIndex];
-    this.remove<Dragable>(this.#items, oldIndex);
-    this.insert<Dragable>(this.#items, dragEvent, newIndex);
+    const eventOldIndex = this.toEventIndex(oldIndex);
+    const eventNewIndex = this.toEventIndex(newIndex);
+
+
+    this.move<Dragable>(this.#dragables, oldIndex, newIndex);
+    this.move<DayEvent>(this.events, eventOldIndex, eventNewIndex);
   }
 
   override insertEvent(dayEvent: DayEvent, index?: number) {
-    const eventIndex = this.calculateEventIndex(index);
+    const eventIndex = this.toEventIndex(index ?? this.events.length - 1);
     const eventDuration = dayEvent.toDragDayEvent().getDurationInMinutes();
     if (this.countPlaceholders() * 15 < eventDuration) {
       throw new Error("Not enough placeholders to insert the event!");
     }
 
-    this.insert<Dragable>(this.#items, dayEvent.toDragDayEvent(), index);
+    this.insert<Dragable>(this.#dragables, dayEvent.toDragDayEvent(), index);
     this.insert<DayEvent>(this.events, dayEvent, eventIndex);
     this.removeExtraPlaceholdersAfterInsertion(
-      index ?? this.#items.length - 1,
+      index ?? this.#dragables.length - 1,
       eventDuration,
     );
   }
 
   override removeEvent(index: number) {
-    const eventIndex = this.calculateEventIndex(index);
+    const eventIndex = this.toEventIndex(index);
 
-    this.removeItem(index);
+    const dragEvent = this.removeDragable(index);
     this.remove<DayEvent>(this.events, eventIndex);
+
+    this.addMissingPlaceholdersAfterRemoval(
+      index,
+      dragEvent.getDurationInMinutes(),
+    );
   }
-  removeItem(index: number) {
-    const dragEvent: Dragable = this.#items[index];
-    this.remove<Dragable>(this.#items, index);
+  removeDragable(index: number) {
+    const dragEvent: Dragable = this.#dragables[index];
+    this.remove<Dragable>(this.#dragables, index);
 
     return dragEvent;
   }
 
-  findEventInitems(eventId: string) {
-    return this.#items.findIndex((item) => item.getId() === eventId);
+  override findEventIdInDragables(eventId: string) {
+    return this.#dragables.findIndex((item) => item.getId() === eventId);
   }
 
-  override getItems() {
-    return this.#items;
+  override getDragables()  {
+    return this.#dragables;
   }
 }

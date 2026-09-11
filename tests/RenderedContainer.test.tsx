@@ -15,7 +15,7 @@ Deno.test("fills 16 placeholders in bar for 4 remaining hours", () => {
   const totalTime = new TimeValue(240);
   const bar = new RenderedBarContainer("Bar Events", totalTime);
   //Assert
-  expect(bar.getItems().length).toBe(16);
+  expect(bar.getDragables().length).toBe(16);
 });
 
 Deno.test("moves an event to the bar, removes excess placeholders", () => {
@@ -24,9 +24,12 @@ Deno.test("moves an event to the bar, removes excess placeholders", () => {
   const eventId = "1";
 
   const sampleEvent = createDayEvent(eventId);
-  const eventContainers = createEventContainers(unplacedContainerName, barContainerName, totalTimeInMinutes);
+  const eventContainers = createEventContainers(
+    unplacedContainerName,
+    barContainerName,
+    totalTimeInMinutes,
+  );
   eventContainers[unplacedContainerName].insertEvent(sampleEvent, 0);
-
 
   const amountOfPlaceholders = calculateAmountOfPlaceholders(
     totalTimeInMinutes.getTotalMinutes() - sampleEvent.getDurationInMinutes(),
@@ -43,11 +46,11 @@ Deno.test("moves an event to the bar, removes excess placeholders", () => {
 
   //Assert
   expect(eventContainers[barContainerName].getEvents().length).toBe(1);
-  expect(eventContainers[barContainerName].getItems().length).toBe(
+  expect(eventContainers[barContainerName].getDragables().length).toBe(
     amountOfPlaceholders + amountOfEvents,
   );
 
-  expect(eventContainers[unplacedContainerName].getItems().length).toBe(0);
+  expect(eventContainers[unplacedContainerName].getDragables().length).toBe(0);
 
   expect(eventContainers[barContainerName].getEvents()[0].getId()).toBe(
     sampleEvent.getId(),
@@ -61,14 +64,20 @@ Deno.test("moves event out of the bar, adds missing placeholders", () => {
 
   const sampleEvent = createDayEvent(eventId);
 
-  const eventContainers = createEventContainers(unplacedContainerName, barContainerName, totalTime);
+  const eventContainers = createEventContainers(
+    unplacedContainerName,
+    barContainerName,
+    totalTime,
+  );
 
   eventContainers[barContainerName].insertEvent(sampleEvent, 3);
-  const amountOfPlaceholders =
-    calculateAmountOfPlaceholders(totalTime.getTotalMinutes());
+  const amountOfPlaceholders = calculateAmountOfPlaceholders(
+    totalTime.getTotalMinutes(),
+  );
 
   const eventIndex =
-    eventContainers[barContainerName].findEventInItems(eventId);
+    eventContainers[barContainerName].findEventIdInDragables(eventId);
+
   //Act
   moveBetweenContainers({
     oldContainer: eventContainers[barContainerName],
@@ -80,11 +89,11 @@ Deno.test("moves event out of the bar, adds missing placeholders", () => {
 
   //Assert
   expect(eventContainers[barContainerName].getEvents().length).toBe(0);
-  expect(eventContainers[barContainerName].getItems().length).toBe(
+  expect(eventContainers[barContainerName].getDragables().length).toBe(
     amountOfPlaceholders,
   );
 
-  expect(eventContainers[unplacedContainerName].getItems().length).toBe(1);
+  expect(eventContainers[unplacedContainerName].getDragables().length).toBe(1);
 
   expect(eventContainers[unplacedContainerName].getEvents()[0].getId()).toBe(
     sampleEvent.getId(),
@@ -92,13 +101,27 @@ Deno.test("moves event out of the bar, adds missing placeholders", () => {
 });
 
 Deno.test("moves event in the same bar to different index", () => {
-
-  const eventContainers = createEventContainers(unplacedContainerName, barContainerName, new TimeValue(120));
+  const eventContainers = createEventContainers(
+    unplacedContainerName,
+    barContainerName,
+    new TimeValue(120),
+  );
 
   const eventId = "1";
   const sampleEvent = createDayEvent(eventId);
 
+  eventContainers[barContainerName].insertEvent(sampleEvent, 0);
 
-  eventContainers[barContainerName].fillEmptyBarWithPlaceholders(120);
+  eventContainers[barContainerName].moveEvent(0, 3);
+
+  expect(eventContainers[barContainerName].getDragables()[3].getId()).toBe(
+    sampleEvent.getId(),
+  );
+
+
   
+  const eventIndex = eventContainers[barContainerName].toEventIndex(3);
+  expect(eventContainers[barContainerName].getEvents()[eventIndex].getId()).toBe(
+    sampleEvent.getId(),
+  );
 });
