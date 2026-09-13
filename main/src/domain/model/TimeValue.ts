@@ -40,6 +40,26 @@ export class TimeValue {
     this.#totalMinutes -= timeValue.getTotalMinutes();
   }
 
+  static substract(timeValue: TimeValue, timeValue2: TimeValue) {
+    return new TimeValue(
+      timeValue.getTotalMinutes() - timeValue2.getTotalMinutes(),
+    );
+  }
+
+  static add(timeValue: TimeValue, timeValue2: TimeValue) {
+    return new TimeValue(
+      timeValue.getTotalMinutes() + timeValue2.getTotalMinutes(),
+    );
+  }
+
+  static addMinutes(timeValue: TimeValue, minutes: number) {
+    return new TimeValue(timeValue.getTotalMinutes() + minutes);
+  }
+
+  static substractMinutes(timeValue: TimeValue, minutes: number) {
+    return new TimeValue(timeValue.getTotalMinutes() - minutes);
+  }
+
   clone(): TimeValue {
     return new TimeValue(this.#totalMinutes);
   }

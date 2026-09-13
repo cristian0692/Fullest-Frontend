@@ -4,13 +4,14 @@ export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 export const BACKEND_PORT = import.meta.env.VITE_BACKEND_PORT;
 
 export const saveDay = async (
-  events: (DayEvent | undefined)[],
+  events: DayEvent[],
   startTime: TimeValue,
   endTime: TimeValue,
 ) => {
+
   const data = {
     events,
-    day: startTime.toString(),
+    date: new Date().toString(),
     startTime: startTime.toString(),
     endTime: endTime.toString(),
   };

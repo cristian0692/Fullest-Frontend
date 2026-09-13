@@ -5,7 +5,7 @@ import { animate } from "animejs";
 import MainButton from "../Main/MainButton.tsx";
 import SecondaryButton from "../Main/SecondaryButton.tsx";
 import { useNavigate } from "react-router-dom";
-import { disableScroll } from "@/Logics/scrollManager.ts";
+import { disableScroll } from "../../Logics/scrollManager.ts";
 
 const Hero = () => {
   const [barLoaded, setBarLoaded] = useState(false);

@@ -15,6 +15,7 @@ export class RenderedContainer extends DayEventContainer {
 
   override insertEvent(dayEvent: DayEvent, index?: number) {
     this.insert<DayEvent>(this.events, dayEvent, index);
+    dayEvent.removeStartTime();
   }
 
   override removeEvent(index: number) {

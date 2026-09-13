@@ -35,11 +35,12 @@ export function setUpEvents(events: DayEvent[], extra?: React.ReactNode) {
 export function createEventContainers(
   unplacedContainerName: string,
   barContainerName: string,
-  totalTime: TimeValue,
+  startTime: TimeValue,
+  endTime: TimeValue,
 ): Record<string, RenderedContainer> {
   return {
     [unplacedContainerName]: new RenderedContainer(unplacedContainerName),
-    [barContainerName]: new RenderedBarContainer("Bar Events", totalTime),
+    [barContainerName]: new RenderedBarContainer("Bar Events", startTime, endTime),
   };
 }
 

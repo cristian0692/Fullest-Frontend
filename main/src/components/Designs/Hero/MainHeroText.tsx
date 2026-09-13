@@ -46,10 +46,10 @@ const MainHeroText = ({ startAnimation }: Props) => {
         </div>
         <div className="flex gap-3">
           <span
-            className="text-transparent"
+            className="text-transparent text-nowrap"
             style={{ WebkitTextStroke: "1px #f58b1a" }}
           >
-            with
+            to the
           </span>
           <span className="italic">Fullest</span>
         </div>

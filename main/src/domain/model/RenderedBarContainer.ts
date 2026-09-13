@@ -7,11 +7,19 @@ import { TimeValue } from "!/domain/model/TimeValue.ts";
 
 export class RenderedBarContainer extends RenderedContainer {
   #dragables: Dragable[];
-  constructor(name: string, totalTime: TimeValue, items?: DayEvent[]) {
+  #startTime: TimeValue;
+  #endTime: TimeValue;
+  constructor(
+    name: string,
+    startTime: TimeValue,
+    endTime: TimeValue,
+    items?: DayEvent[],
+  ) {
     super(name, items ?? []);
     this.#dragables = items?.map((item) => item.toDragDayEvent()) ?? [];
-
-    this.adjustBarWithPlaceholders(totalTime);
+    this.#startTime = startTime;
+    this.#endTime = endTime;
+    this.adjustBarWithPlaceholders(this.getTotalTime());
   }
 
   adjustBarWithPlaceholders(remainingTime: TimeValue) {
@@ -80,7 +88,11 @@ export class RenderedBarContainer extends RenderedContainer {
 
   addMissingPlaceholdersAfterRemoval(index: number, minutesRemoved: number) {
     for (let i = 0; i < minutesRemoved / 15; i++) {
-      this.insert<Dragable>(this.#dragables, this.insertUniquePlaceHolder(), index);
+      this.insert<Dragable>(
+        this.#dragables,
+        this.insertUniquePlaceHolder(),
+        index,
+      );
     }
     index += 1;
   }
@@ -170,7 +182,6 @@ export class RenderedBarContainer extends RenderedContainer {
     const eventOldIndex = this.toEventIndex(oldIndex);
     const eventNewIndex = this.toEventIndex(newIndex);
 
-
     this.move<Dragable>(this.#dragables, oldIndex, newIndex);
     this.move<DayEvent>(this.events, eventOldIndex, eventNewIndex);
   }
@@ -179,15 +190,23 @@ export class RenderedBarContainer extends RenderedContainer {
     const eventIndex = this.toEventIndex(index ?? this.events.length - 1);
     const eventDuration = dayEvent.toDragDayEvent().getDurationInMinutes();
     if (this.countPlaceholders() * 15 < eventDuration) {
-      throw new Error("Not enough placeholders to insert the event!");
+      throw new Error("Not enough free time to insert the event!");
     }
 
+    dayEvent.setStartTime(
+      this.calculateStartTime(index ?? this.#dragables.length - 1)
+    );
     this.insert<Dragable>(this.#dragables, dayEvent.toDragDayEvent(), index);
     this.insert<DayEvent>(this.events, dayEvent, eventIndex);
     this.removeExtraPlaceholdersAfterInsertion(
       index ?? this.#dragables.length - 1,
       eventDuration,
     );
+  }
+  calculateStartTime(index: number): TimeValue {
+    return this.#dragables.slice(0,index).reduce((acc, dragable) => {
+      return TimeValue.add(acc, dragable.getDuration())
+    }, this.#startTime)
   }
 
   override removeEvent(index: number) {
@@ -212,7 +231,16 @@ export class RenderedBarContainer extends RenderedContainer {
     return this.#dragables.findIndex((item) => item.getId() === eventId);
   }
 
-  override getDragables()  {
+  override getDragables() {
     return this.#dragables;
+  }
+
+  getTotalMinutes() {
+    return TimeValue.substract(this.#endTime, this.#startTime)
+      .getTotalMinutes();
+  }
+
+  getTotalTime() {
+    return TimeValue.substract(this.#endTime, this.#startTime);
   }
 }

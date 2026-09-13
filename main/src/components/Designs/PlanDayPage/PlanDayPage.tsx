@@ -72,14 +72,7 @@ const PlanDayPage = () => {
 
     const dragEvents = eventContainers[name];
 
-    const events: (DayEvent | undefined)[] = dragEvents.getDragables().map((dragEvent) => (
-      dayEvents.find((event) => event.getId() == dragEvent.getId())
-    ));
-    if (!events) {
-      return;
-    }
-
-    saveDay(events, wakeTime, sleepTime);
+    saveDay(dragEvents.getEvents(), wakeTime, sleepTime);
   };
 
   useEffect(() => {

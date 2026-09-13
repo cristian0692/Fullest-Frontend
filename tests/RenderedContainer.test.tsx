@@ -12,54 +12,60 @@ const unplacedContainerName = "Unplaced Events";
 const barContainerName = "Bar Events";
 Deno.test("fills 16 placeholders in bar for 4 remaining hours", () => {
   //Arrange
-  const totalTime = new TimeValue(240);
-  const bar = new RenderedBarContainer("Bar Events", totalTime);
+  const startTime = new TimeValue(0,0);
+  const endTime = new TimeValue(4,0);
+  const bar = new RenderedBarContainer("Bar Events", startTime, endTime);
   //Assert
   expect(bar.getDragables().length).toBe(16);
 });
 
 Deno.test("moves an event to the bar, removes excess placeholders", () => {
   //Arrange
-  const totalTimeInMinutes = new TimeValue(240);
+  const endTime = new TimeValue(0,2);
+  const startTime = new TimeValue(0, 6);
   const eventId = "1";
 
   const sampleEvent = createDayEvent(eventId);
   const eventContainers = createEventContainers(
     unplacedContainerName,
     barContainerName,
-    totalTimeInMinutes,
+    startTime,
+    endTime
   );
+
+  const barContainer = eventContainers[barContainerName] as RenderedBarContainer;
   eventContainers[unplacedContainerName].insertEvent(sampleEvent, 0);
 
   const amountOfPlaceholders = calculateAmountOfPlaceholders(
-    totalTimeInMinutes.getTotalMinutes() - sampleEvent.getDurationInMinutes(),
+    barContainer.getTotalMinutes() - sampleEvent.getDurationInMinutes(),
   );
   const amountOfEvents = 1;
   //Act
   moveBetweenContainers({
     oldContainer: eventContainers[unplacedContainerName],
     oldIndex: 0,
-    newContainer: eventContainers[barContainerName],
+    newContainer: barContainer,
     newIndex: 3,
     item: sampleEvent,
   });
 
   //Assert
-  expect(eventContainers[barContainerName].getEvents().length).toBe(1);
-  expect(eventContainers[barContainerName].getDragables().length).toBe(
+  expect(barContainer.getEvents().length).toBe(1);
+  expect(barContainer.getDragables().length).toBe(
     amountOfPlaceholders + amountOfEvents,
   );
 
   expect(eventContainers[unplacedContainerName].getDragables().length).toBe(0);
 
-  expect(eventContainers[barContainerName].getEvents()[0].getId()).toBe(
+  expect(barContainer.getEvents()[0].getId()).toBe(
     sampleEvent.getId(),
   );
 });
 
 Deno.test("moves event out of the bar, adds missing placeholders", () => {
   //Arrange
-  const totalTime = new TimeValue(120);
+  const startTime = new TimeValue(0);
+  const endTime = new TimeValue(120);
   const eventId = "1";
 
   const sampleEvent = createDayEvent(eventId);
@@ -67,12 +73,13 @@ Deno.test("moves event out of the bar, adds missing placeholders", () => {
   const eventContainers = createEventContainers(
     unplacedContainerName,
     barContainerName,
-    totalTime,
+    startTime,
+    endTime
   );
 
   eventContainers[barContainerName].insertEvent(sampleEvent, 3);
   const amountOfPlaceholders = calculateAmountOfPlaceholders(
-    totalTime.getTotalMinutes(),
+    (eventContainers[barContainerName] as RenderedBarContainer).getTotalMinutes(),
   );
 
   const eventIndex =
@@ -101,10 +108,13 @@ Deno.test("moves event out of the bar, adds missing placeholders", () => {
 });
 
 Deno.test("moves event in the same bar to different index", () => {
+  const startTime = new TimeValue(0,0);
+  const endTime = new TimeValue(2,0);
   const eventContainers = createEventContainers(
     unplacedContainerName,
     barContainerName,
-    new TimeValue(120),
+    startTime, 
+    endTime
   );
 
   const eventId = "1";

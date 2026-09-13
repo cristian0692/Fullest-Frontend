@@ -49,6 +49,10 @@ export class DayEvent {
     this.#startTime = startTime;
   }
 
+  removeStartTime(){
+    this.#startTime = undefined;
+  }
+
   toDragDayEvent(startTime?: Date) {
     return new DragDayEvent(
       this.#id,
