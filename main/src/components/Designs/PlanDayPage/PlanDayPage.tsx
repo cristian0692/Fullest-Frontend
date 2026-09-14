@@ -10,7 +10,7 @@ import { useEvent } from "@/Logics/Hooks/EventProvider.tsx";
 import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
 import { saveDay } from "../../../api/router.ts";
 import { useTime } from "../../Logics/Hooks/TimeProvider.tsx";
-import { DayEvent } from "!/domain/model/DayEvent.ts";
+import { DayEventDto } from "!/api/dtos/DayEventDto.ts";
 
 const PlanDayPage = () => {
   const [step, setStep] = useState(1);
@@ -72,7 +72,11 @@ const PlanDayPage = () => {
 
     const dragEvents = eventContainers[name];
 
-    saveDay(dragEvents.getEvents(), wakeTime, sleepTime);
+    saveDay(
+      dragEvents.getEvents().map((event) => DayEventDto.toDto(event)),
+      wakeTime,
+      sleepTime,
+    );
   };
 
   useEffect(() => {

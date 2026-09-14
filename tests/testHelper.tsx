@@ -1,13 +1,13 @@
 import { screen, fireEvent, render } from "@testing-library/react";
 import { AppProvider } from "@/Logics/Hooks/AppProvider.tsx";
-import BarEvents from "@/Logics/PlanDayPage/Bar/BarEvents.tsx";
-import RemainingTime from "@/Logics/PlanDayPage/Bar/RemainingTime.tsx";
 import WriteEventsStep from "@/Designs/PlanDayPage/Steps/WriteEventsStep.tsx";
 import { DayEvent } from "!/domain/model/DayEvent.ts";
 import { RenderedContainer } from "!/domain/model/RenderedContainer.ts";
-import { RenderType } from "!/domain/model/enums/RenderType.ts";
 import { TimeValue } from "!/domain/model/TimeValue.ts";
 import { RenderedBarContainer } from "!/domain/model/RenderedBarContainer.ts";
+
+export const unplacedContainerName = "Unplaced Events";
+export const barContainerName = "Bar Events";
 
 export function setUpEvents(events: DayEvent[], extra?: React.ReactNode) {
   const result = render(
@@ -33,14 +33,12 @@ export function setUpEvents(events: DayEvent[], extra?: React.ReactNode) {
 }
 
 export function createEventContainers(
-  unplacedContainerName: string,
-  barContainerName: string,
-  startTime: TimeValue,
-  endTime: TimeValue,
+  startHour: number,
+  endHour: number,
 ): Record<string, RenderedContainer> {
   return {
     [unplacedContainerName]: new RenderedContainer(unplacedContainerName),
-    [barContainerName]: new RenderedBarContainer("Bar Events", startTime, endTime),
+    [barContainerName]: new RenderedBarContainer("Bar Events", new TimeValue(0, startHour), new TimeValue(0, endHour)),
   };
 }
 

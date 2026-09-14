@@ -43,7 +43,8 @@ export const EventProvider = ({ children }: { children: React.ReactNode }) => {
     ),
     [EVENT_CONTAINER_NAMES.barEvents]: new RenderedBarContainer(
       EVENT_CONTAINER_NAMES.barEvents,
-      new TimeValue(0),
+      new TimeValue(0,18),
+      new TimeValue(0,22)
     ),
   });
 

@@ -10,6 +10,7 @@
     "jsr:@std/encoding@1": "1.0.10",
     "jsr:@std/encoding@^1.0.10": "1.0.10",
     "jsr:@std/expect@1": "1.0.20",
+    "jsr:@std/expect@^1.0.20": "1.0.20",
     "jsr:@std/http@1": "1.0.21",
     "jsr:@std/internal@^1.0.10": "1.0.12",
     "jsr:@std/internal@^1.0.12": "1.0.14",
@@ -18,23 +19,23 @@
     "jsr:@std/path@1": "1.1.2",
     "jsr:@std/path@^1.1.6": "1.1.6",
     "jsr:@tajpouria/cors@^1.2.1": "1.2.1",
-    "npm:@dnd-kit/core@*": "6.3.1_react@19.2.8_react-dom@19.2.8__react@19.2.8",
-    "npm:@dnd-kit/core@^6.3.1": "6.3.1_react@19.2.8_react-dom@19.2.8__react@19.2.8",
-    "npm:@dnd-kit/sortable@*": "10.0.0_@dnd-kit+core@6.3.1__react@19.2.8__react-dom@19.2.8___react@19.2.8_react@19.2.8_react-dom@19.2.8__react@19.2.8",
-    "npm:@dnd-kit/sortable@10": "10.0.0_@dnd-kit+core@6.3.1__react@19.2.8__react-dom@19.2.8___react@19.2.8_react@19.2.8_react-dom@19.2.8__react@19.2.8",
+    "npm:@dnd-kit/core@*": "6.3.1_react@19.2.8_react-dom@19.2.8",
+    "npm:@dnd-kit/core@^6.3.1": "6.3.1_react@19.2.8_react-dom@19.2.8",
+    "npm:@dnd-kit/sortable@*": "10.0.0_@dnd-kit+core@6.3.1_react@19.2.8_react-dom@19.2.8",
+    "npm:@dnd-kit/sortable@10": "10.0.0_@dnd-kit+core@6.3.1_react@19.2.8_react-dom@19.2.8",
     "npm:@dnd-kit/utilities@*": "3.2.2_react@19.2.8",
     "npm:@eslint/js@^9.36.0": "9.37.0",
     "npm:@happy-dom/global-registrator@^20.11.6": "20.11.6",
-    "npm:@tailwindcss/vite@^4.1.14": "4.1.14_vite@7.1.9__@types+node@24.7.0__picomatch@4.0.3_@types+node@24.7.0",
+    "npm:@tailwindcss/vite@^4.1.14": "4.1.14_vite@7.1.9_@types+node@24.7.0",
     "npm:@testing-library/jest-dom@^7.0.1": "7.0.1_@testing-library+dom@10.4.1",
-    "npm:@testing-library/react@16": "16.3.2_@testing-library+dom@10.4.1_@types+react@19.2.2_@types+react-dom@19.2.1__@types+react@19.2.2_react@19.2.8_react-dom@19.2.8__react@19.2.8",
-    "npm:@testing-library/react@^16.3.2": "16.3.2_@testing-library+dom@10.4.1_@types+react@19.2.2_@types+react-dom@19.2.1__@types+react@19.2.2_react@19.2.8_react-dom@19.2.8__react@19.2.8",
+    "npm:@testing-library/react@16": "16.3.2_@testing-library+dom@10.4.1_@types+react@19.2.2_@types+react-dom@19.2.1_react@19.2.8_react-dom@19.2.8",
+    "npm:@testing-library/react@^16.3.2": "16.3.2_@testing-library+dom@10.4.1_@types+react@19.2.2_@types+react-dom@19.2.1_react@19.2.8_react-dom@19.2.8",
     "npm:@types/jest@30": "30.0.0",
     "npm:@types/node@^24.6.0": "24.7.0",
     "npm:@types/react-dom@^19.1.9": "19.2.1_@types+react@19.2.2",
     "npm:@types/react@19": "19.2.2",
     "npm:@types/react@^19.1.16": "19.2.2",
-    "npm:@vitejs/plugin-react@^5.0.4": "5.0.4_vite@7.1.9__@types+node@24.7.0__picomatch@4.0.3_@babel+core@7.28.4_@types+node@24.7.0",
+    "npm:@vitejs/plugin-react@^5.0.4": "5.0.4_vite@7.1.9_@babel+core@7.28.4_@types+node@24.7.0",
     "npm:animejs@^4.2.2": "4.2.2",
     "npm:dotenv@^17.2.3": "17.2.3",
     "npm:drizzle-kit@*": "0.31.5_esbuild@0.25.10",
@@ -50,12 +51,13 @@
     "npm:react-dom@19": "19.2.8_react@19.2.8",
     "npm:react-dom@^19.2.8": "19.2.8_react@19.2.8",
     "npm:react-icons@^5.5.0": "5.5.0_react@19.2.8",
-    "npm:react-router-dom@^7.9.4": "7.9.4_react@19.2.8_react-dom@19.2.8__react@19.2.8",
+    "npm:react-router-dom@^7.9.4": "7.9.4_react@19.2.8_react-dom@19.2.8",
     "npm:react@^19.1.1": "19.2.8",
+    "npm:react@^19.2.8": "19.2.8",
     "npm:rolldown-vite@7.1.14": "7.1.14_@types+node@24.7.0_@emnapi+core@1.10.0_@emnapi+runtime@1.10.0",
     "npm:tailwindcss@^4.1.14": "4.1.14",
-    "npm:ts-jest@^29.4.12": "29.4.12_jest@30.4.2__@types+node@24.7.0_typescript@5.9.3",
-    "npm:typescript-eslint@^8.45.0": "8.46.0_eslint@9.37.0_typescript@5.9.3_@typescript-eslint+parser@8.46.0__eslint@9.37.0__typescript@5.9.3",
+    "npm:ts-jest@^29.4.12": "29.4.12_jest@30.4.2_typescript@5.9.3",
+    "npm:typescript-eslint@^8.45.0": "8.46.0_eslint@9.37.0_typescript@5.9.3_@typescript-eslint+parser@8.46.0",
     "npm:typescript@~5.9.3": "5.9.3",
     "npm:uuid@13": "13.0.0",
     "npm:vite@*": "7.1.9_@types+node@24.7.0_picomatch@4.0.3"
@@ -418,14 +420,14 @@
     "@csstools/color-helpers@5.1.0": {
       "integrity": "sha512-S11EXWJyy0Mz5SYvRmY8nJYTFFd1LCNV+7cXyAgQtOOuzb4EsgfqDufL+9esx72/eLhsRdGZwaldu/h+E4t4BA=="
     },
-    "@csstools/css-calc@2.1.4_@csstools+css-parser-algorithms@3.0.5__@csstools+css-tokenizer@3.0.4_@csstools+css-tokenizer@3.0.4": {
+    "@csstools/css-calc@2.1.4_@csstools+css-parser-algorithms@3.0.5_@csstools+css-tokenizer@3.0.4": {
       "integrity": "sha512-3N8oaj+0juUw/1H3YwmDDJXCgTB1gKU6Hc/bB502u9zR0q2vd786XJH9QfrKIEgFlZmhZiq6epXl4rHqhzsIgQ==",
       "dependencies": [
         "@csstools/css-parser-algorithms",
         "@csstools/css-tokenizer"
       ]
     },
-    "@csstools/css-color-parser@3.1.0_@csstools+css-parser-algorithms@3.0.5__@csstools+css-tokenizer@3.0.4_@csstools+css-tokenizer@3.0.4": {
+    "@csstools/css-color-parser@3.1.0_@csstools+css-parser-algorithms@3.0.5_@csstools+css-tokenizer@3.0.4": {
       "integrity": "sha512-nbtKwh3a6xNVIp/VRuXV64yTKnb1IjTAEEh3irzS+HkKjAOYLTGNb9pmVNntZ8iVBHcWDA2Dof0QtPgFI1BaTA==",
       "dependencies": [
         "@csstools/color-helpers",
@@ -450,7 +452,7 @@
         "tslib"
       ]
     },
-    "@dnd-kit/core@6.3.1_react@19.2.8_react-dom@19.2.8__react@19.2.8": {
+    "@dnd-kit/core@6.3.1_react@19.2.8_react-dom@19.2.8": {
       "integrity": "sha512-xkGBRQQab4RLwgXxoqETICr6S5JlogafbhNsidmrkVv2YRs5MLwpjoF2qpiGjQt8S9AoxtIV603s0GIUpY5eYQ==",
       "dependencies": [
         "@dnd-kit/accessibility",
@@ -460,7 +462,7 @@
         "tslib"
       ]
     },
-    "@dnd-kit/sortable@10.0.0_@dnd-kit+core@6.3.1__react@19.2.8__react-dom@19.2.8___react@19.2.8_react@19.2.8_react-dom@19.2.8__react@19.2.8": {
+    "@dnd-kit/sortable@10.0.0_@dnd-kit+core@6.3.1_react@19.2.8_react-dom@19.2.8": {
       "integrity": "sha512-+xqhmIIzvAYMGfBYYnbKuNicfSsk4RksY2XdmJhT+HAC01nix6fHCztU68jooFiMUB01Ky3F0FyOvhG/BZrWkg==",
       "dependencies": [
         "@dnd-kit/core",
@@ -1436,7 +1438,7 @@
       ],
       "scripts": true
     },
-    "@tailwindcss/vite@4.1.14_vite@7.1.9__@types+node@24.7.0__picomatch@4.0.3_@types+node@24.7.0": {
+    "@tailwindcss/vite@4.1.14_vite@7.1.9_@types+node@24.7.0": {
       "integrity": "sha512-BoFUoU0XqgCUS1UXWhmDJroKKhNXeDzD7/XwabjkDIAbMnc4ULn5e2FuEuBbhZ6ENZoSYzKlzvZ44Yr6EUDUSA==",
       "dependencies": [
         "@tailwindcss/node",
@@ -1470,7 +1472,7 @@
         "redent"
       ]
     },
-    "@testing-library/react@16.3.2_@testing-library+dom@10.4.1_@types+react@19.2.2_@types+react-dom@19.2.1__@types+react@19.2.2_react@19.2.8_react-dom@19.2.8__react@19.2.8": {
+    "@testing-library/react@16.3.2_@testing-library+dom@10.4.1_@types+react@19.2.2_@types+react-dom@19.2.1_react@19.2.8_react-dom@19.2.8": {
       "integrity": "sha512-XU5/SytQM+ykqMnAnvB2umaJNIOsLF3PVv//1Ew4CTcpz0/BRyy/af40qqrt7SjKpDdT1saBMc42CUok5gaw+g==",
       "dependencies": [
         "@babel/runtime",
@@ -1601,7 +1603,7 @@
         "@types/yargs-parser"
       ]
     },
-    "@typescript-eslint/eslint-plugin@8.46.0_@typescript-eslint+parser@8.46.0__eslint@9.37.0__typescript@5.9.3_eslint@9.37.0_typescript@5.9.3": {
+    "@typescript-eslint/eslint-plugin@8.46.0_@typescript-eslint+parser@8.46.0_eslint@9.37.0_typescript@5.9.3": {
       "integrity": "sha512-hA8gxBq4ukonVXPy0OKhiaUh/68D0E88GSmtC1iAEnGaieuDi38LhS7jdCHRLi6ErJBNDGCzvh5EnzdPwUc0DA==",
       "dependencies": [
         "@eslint-community/regexpp",
@@ -1818,7 +1820,7 @@
       "os": ["win32"],
       "cpu": ["x64"]
     },
-    "@vitejs/plugin-react@5.0.4_vite@7.1.9__@types+node@24.7.0__picomatch@4.0.3_@babel+core@7.28.4_@types+node@24.7.0": {
+    "@vitejs/plugin-react@5.0.4_vite@7.1.9_@babel+core@7.28.4_@types+node@24.7.0": {
       "integrity": "sha512-La0KD0vGkVkSk6K+piWDKRUyg8Rl5iAIKRMH0vMJI0Eg47bq1eOxmoObAaQG37WMW9MSyk7Cs8EIWwJC1PtzKA==",
       "dependencies": [
         "@babel/core",
@@ -3539,7 +3541,7 @@
     "react-refresh@0.17.0": {
       "integrity": "sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ=="
     },
-    "react-router-dom@7.9.4_react@19.2.8_react-dom@19.2.8__react@19.2.8": {
+    "react-router-dom@7.9.4_react@19.2.8_react-dom@19.2.8": {
       "integrity": "sha512-f30P6bIkmYvnHHa5Gcu65deIXoA2+r3Eb6PJIAddvsT9aGlchMatJ51GgpU470aSqRRbFX22T70yQNUGuW3DfA==",
       "dependencies": [
         "react",
@@ -3547,7 +3549,7 @@
         "react-router"
       ]
     },
-    "react-router@7.9.4_react@19.2.8_react-dom@19.2.8__react@19.2.8": {
+    "react-router@7.9.4_react@19.2.8_react-dom@19.2.8": {
       "integrity": "sha512-SD3G8HKviFHg9xj7dNODUKDFgpG4xqD5nhyd0mYoB5iISepuZAvzSr8ywxgxKJ52yRzf/HWtVHc9AWwoTbljvA==",
       "dependencies": [
         "cookie",
@@ -3887,7 +3889,7 @@
         "typescript"
       ]
     },
-    "ts-jest@29.4.12_jest@30.4.2__@types+node@24.7.0_typescript@5.9.3": {
+    "ts-jest@29.4.12_jest@30.4.2_typescript@5.9.3": {
       "integrity": "sha512-Ov6ClY53Fflh6BGAnY2DlTq1hYDrTycz2PVTXBWFW2CU+9zrEqAp9fWdGXl42EXO5RLSFAcAZ2JFKbP+zBTFfw==",
       "dependencies": [
         "bs-logger",
@@ -3922,7 +3924,7 @@
     "type-fest@4.41.0": {
       "integrity": "sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA=="
     },
-    "typescript-eslint@8.46.0_eslint@9.37.0_typescript@5.9.3_@typescript-eslint+parser@8.46.0__eslint@9.37.0__typescript@5.9.3": {
+    "typescript-eslint@8.46.0_eslint@9.37.0_typescript@5.9.3_@typescript-eslint+parser@8.46.0": {
       "integrity": "sha512-6+ZrB6y2bT2DX3K+Qd9vn7OFOJR+xSLDj+Aw/N3zBwUt27uTw2sw2TE2+UcY1RiyBZkaGbTkVg9SSdPNUG6aUw==",
       "dependencies": [
         "@typescript-eslint/eslint-plugin",

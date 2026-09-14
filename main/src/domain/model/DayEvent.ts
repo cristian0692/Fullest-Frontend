@@ -44,6 +44,13 @@ export class DayEvent {
     return this.#startTime;
   }
 
+  getEndTime(){
+    if(this.#startTime == null){
+      throw new Error("startTime needs to be defined to calculate endTime");
+    }
+    return TimeValue.add(this.#startTime, this.#duration);
+  }
+
 
   setStartTime(startTime: TimeValue){
     this.#startTime = startTime;
