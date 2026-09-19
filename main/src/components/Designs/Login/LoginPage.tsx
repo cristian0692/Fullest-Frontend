@@ -1,12 +1,10 @@
 import { useState } from "react";
-import { loginUser } from "!/api/router.ts";
-import { AuthToken } from "!/api/AuthToken.ts";
+import { useAuth } from "@/Logics/Hooks/AuthContext.tsx";
+import { Navigate, useNavigate } from "react-router-dom";
 
-interface Props {
-  setToken: (userToken: AuthToken) => void;
-}
-
-export const LoginPage = ({ setToken }: Props) => {
+export const LoginPage = () => {
+  const { login } = useAuth();
+  const navigate = useNavigate();
   const [username, setUsername] = useState<string>();
   const [password, setPassword] = useState<string>();
   const [error, setError] = useState<string | null>(null);
@@ -24,11 +22,8 @@ export const LoginPage = ({ setToken }: Props) => {
         throw new Error("Password cant be null");
       }
 
-      const token = await loginUser({
-        username,
-        password,
-      });
-      setToken(token);
+      await login({ username, password });
+      navigate("/new-calendar");
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -49,6 +44,7 @@ export const LoginPage = ({ setToken }: Props) => {
         <label>
           <p>Username</p>
           <input
+            id="username"
             type="text"
             onChange={(e) => setUsername(e.target.value)}
             disabled={loading}
@@ -57,6 +53,7 @@ export const LoginPage = ({ setToken }: Props) => {
         <label>
           <p>Password</p>
           <input
+            id="password"
             type="password"
             onChange={(e) => setPassword(e.target.value)}
             disabled={loading}

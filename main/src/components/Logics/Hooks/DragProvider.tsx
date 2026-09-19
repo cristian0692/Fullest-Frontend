@@ -1,18 +1,18 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react";
 import { Coordinate } from "!/domain/model/Coordintate.ts";
 import { DayEvent } from "!/domain/model/DayEvent.ts";
 // 1. Define the context type
 type DragContextType = {
   barPosition: Coordinate;
-  setBarPosition: React.Dispatch<React.SetStateAction<Coordinate>>;
+  setBarPosition: Dispatch<SetStateAction<Coordinate>>;
   activeEvent: DayEvent | null;
-  setActiveEvent: React.Dispatch<React.SetStateAction<DayEvent | null>>;
+  setActiveEvent: Dispatch<SetStateAction<DayEvent | null>>;
   isDraggable: boolean;
-  setIsDraggable: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsDraggable: Dispatch<SetStateAction<boolean>>;
   quantityMoved: number;
-  setQuantityMoved: React.Dispatch<React.SetStateAction<number>>;
+  setQuantityMoved: Dispatch<SetStateAction<number>>;
   inserted: InsertionType | null;
-  setInserted: React.Dispatch<React.SetStateAction<InsertionType | null>>;
+  setInserted: Dispatch<SetStateAction<InsertionType | null>>;
 };
 
 export enum InsertionType {
@@ -24,7 +24,7 @@ export enum InsertionType {
 const DragContext = createContext<DragContextType | null>(null);
 
 // 3. Provider component
-export const DragProvider = ({ children }: { children: React.ReactNode }) => {
+export const DragProvider = ({ children }: { children: ReactNode }) => {
   const [barPosition, setBarPosition] = useState<Coordinate>({ x: 0, y: 0 }); // absolute position of the bar
   const [activeEvent, setActiveEvent] = useState<DayEvent | null>(null);
   const [isDraggable, setIsDraggable] = useState(false); // controls whether draggable objects can be dragged

@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import MainButton from "./MainButton.tsx";
-import useToken from "!/api/hooks/useToken.ts";
+import { useAuth } from "@/Logics/Hooks/AuthContext.tsx";
 
 const Header = () => {
   const navigate = useNavigate();
-  const { removeToken } = useToken();
+  const { logout } = useAuth();
 
   const handleLogout = () => {
-    removeToken();
+    logout();
     navigate("/login");
   };
 

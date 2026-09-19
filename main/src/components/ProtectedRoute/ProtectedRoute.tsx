@@ -1,16 +1,16 @@
 import { Navigate } from "react-router-dom";
-import { AuthToken } from "!/api/AuthToken.ts";
 import { ReactNode } from "react";
+import { useAuth } from "@/Logics/Hooks/AuthContext.tsx";
 
 type Props = {
-    children: ReactNode,
-    token: AuthToken
-}
+  children: ReactNode;
+};
 
+export default function ProtectedRoute({ children }: Props) {
+  const { isAuthenticated } = useAuth();
 
-export default function ProtectedRoute({ children, token }: Props) {
-  if (!token) {
-    return <Navigate to="/login" replace/>;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
   }
   return children;
 }

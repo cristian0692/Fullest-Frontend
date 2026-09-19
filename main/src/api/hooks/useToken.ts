@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { jwtDecode } from "jwt-decode";
-import { AuthToken } from "!/api/AuthToken.ts";
 
 export default function useToken() {
   const getToken = () => {
@@ -11,7 +10,7 @@ export default function useToken() {
     }
 
     const userToken = JSON.parse(tokenString);
-    const token = userToken?.token;
+    const token: string = userToken?.token;
 
     if (!token) {
       return null;
@@ -27,7 +26,8 @@ export default function useToken() {
       }
 
       return token;
-    } catch {
+    } catch(err) {
+      console.log(err);
       localStorage.removeItem("token");
       return null;
     }
@@ -35,9 +35,9 @@ export default function useToken() {
 
   const [token, setToken] = useState(getToken());
 
-  const saveToken = (userToken: AuthToken) => {
+  const saveToken = (userToken: string) => {
     localStorage.setItem("token", JSON.stringify(userToken));
-    setToken(userToken.token);
+    setToken(userToken);
   };
   const removeToken = () => {
     localStorage.removeItem("token");

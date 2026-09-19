@@ -45,7 +45,7 @@ export const loginUser = async (credentials: Credentials) => {
   return data;
 };
 
-type Credentials = {
+export type Credentials = {
   username: string;
   password: string;
 };
