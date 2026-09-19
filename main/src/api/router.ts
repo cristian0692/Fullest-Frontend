@@ -8,7 +8,6 @@ export const saveDay = async (
   startTime: TimeValue,
   endTime: TimeValue,
 ) => {
-
   const data = {
     events,
     date: new Date().toString(),
@@ -27,4 +26,19 @@ export const saveDay = async (
     throw new Error("Day failed to save!");
   }
   return response.json();
+};
+
+export const loginUser = (credentials: Credentials) => {
+  return fetch(`${BACKEND_URL}:${BACKEND_PORT}/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(credentials),
+  }).then((data) => data.json());
+};
+
+type Credentials = {
+  username: string;
+  password: string;
 };

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
 import { createTimeline } from "animejs";
-import ExplosionParticles from "@/Designs/ExplosionParticles.tsx";
+import ExplosionParticles from "@/Designs/Hero/ExplosionParticles.tsx";
 
 type Props = {
   onBarComplete?: () => void;
