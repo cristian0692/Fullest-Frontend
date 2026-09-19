@@ -47,6 +47,7 @@
     "npm:happy-dom@^20.11.6": "20.11.6",
     "npm:jest-environment-jsdom@^30.4.1": "30.4.1",
     "npm:jest@^30.4.2": "30.4.2_@types+node@24.7.0",
+    "npm:jwt-decode@4": "4.0.0",
     "npm:path-to-regexp@^6.3.0": "6.3.0",
     "npm:react-dom@19": "19.2.8_react@19.2.8",
     "npm:react-dom@^19.2.8": "19.2.8_react@19.2.8",
@@ -3151,6 +3152,9 @@
       "integrity": "sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==",
       "bin": true
     },
+    "jwt-decode@4.0.0": {
+      "integrity": "sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA=="
+    },
     "keyv@4.5.4": {
       "integrity": "sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==",
       "dependencies": [
@@ -4169,6 +4173,7 @@
         "npm:happy-dom@^20.11.6",
         "npm:jest-environment-jsdom@^30.4.1",
         "npm:jest@^30.4.2",
+        "npm:jwt-decode@4",
         "npm:react-dom@^19.2.8",
         "npm:react-icons@^5.5.0",
         "npm:react-router-dom@^7.9.4",

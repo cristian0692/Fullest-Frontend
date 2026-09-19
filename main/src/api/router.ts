@@ -28,14 +28,21 @@ export const saveDay = async (
   return response.json();
 };
 
-export const loginUser = (credentials: Credentials) => {
-  return fetch(`${BACKEND_URL}:${BACKEND_PORT}/login`, {
+export const loginUser = async (credentials: Credentials) => {
+  const response = await fetch(`${BACKEND_URL}:${BACKEND_PORT}/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(credentials),
-  }).then((data) => data.json());
+  });
+
+  if (!response.ok) {
+    throw new Error(`Login Failed: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data;
 };
 
 type Credentials = {
