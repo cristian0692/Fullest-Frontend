@@ -1,10 +1,11 @@
 import TimeInput from "@/Logics/Inputs/TimeInput.tsx";
+import { TimeValue } from "!/domain/model/TimeValue.ts";
 
 type Props = {
   color: string;
   text: string;
-  onChange: (time: Date) => void;
-  value: Date;
+  onChange: (time: TimeValue) => void;
+  value: TimeValue;
 };
 
 const SpecificTimeInput = ({ color, text, onChange, value }: Props) => {

@@ -7,7 +7,6 @@ import {
   calculatePixelPer15Minutes,
   useEventWidth,
 } from "@/Logics/Hooks/EventWidthProvider.tsx";
-import { InsertionType, useDrag } from "../../../Logics/Hooks/DragProvider.tsx";
 
 type Props = {
   onNext?: () => void;
@@ -15,15 +14,12 @@ type Props = {
 
 const WakeUpSleepStep = ({ onNext }: Props) => {
   const { setSleepTime, setWakeTime, sleepTime, wakeTime } = useTime();
-  const { setInserted } = useDrag();
   const { barWidth, setPixelPer15Minutes } = useEventWidth();
   useEffect(() => {
     if (barWidth != 0) {
       setPixelPer15Minutes(
         calculatePixelPer15Minutes(wakeTime, sleepTime, barWidth),
-      );
-      setInserted(InsertionType.initialize);
-      
+      );      
     }
   }, [wakeTime, sleepTime, barWidth]);
 
@@ -34,7 +30,7 @@ const WakeUpSleepStep = ({ onNext }: Props) => {
         description="Record the times you plan to wake up or sleep on this day"
       />
 
-      <div className="w-full flex justify-between  md:min-w-180 w-full gap-20 md:flex-row flex-col">
+      <div className="w-full flex justify-between  md:min-w-180 gap-20 md:flex-row flex-col">
         <SpecificTimeInput
           onChange={(time) => setWakeTime(time)}
           value={wakeTime}

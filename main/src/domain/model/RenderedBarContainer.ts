@@ -194,7 +194,7 @@ export class RenderedBarContainer extends RenderedContainer {
     }
 
     dayEvent.setStartTime(
-      this.calculateStartTime(index ?? this.#dragables.length - 1)
+      this.calculateStartTime(index ?? this.#dragables.length - 1),
     );
     this.insert<Dragable>(this.#dragables, dayEvent.toDragDayEvent(), index);
     this.insert<DayEvent>(this.events, dayEvent, eventIndex);
@@ -204,21 +204,30 @@ export class RenderedBarContainer extends RenderedContainer {
     );
   }
 
-  insertEventAtTime(dayEvent: DayEvent, time: TimeValue){
+  insertEventAtTime(dayEvent: DayEvent, time: TimeValue) {
+    if (
+      time.getTotalMinutes() < this.#startTime.getTotalMinutes() ||
+      time.getTotalMinutes() > this.#endTime.getTotalMinutes()
+    ) {
+      throw new Error(
+        "Time must be within the startTime and endTime",
+      );
+    }
 
-    if(time.getTotalMinutes() < this.#startTime.getTotalMinutes() 
-      || time.getTotalMinutes() > this.#endTime.getTotalMinutes()) throw new Error(
-    "Time must be within the startTime and endTime")
+    if (time.getTotalMinutes() % 15 != 0) {
+      throw new Error("Time must be divisible by 15");
+    }
 
-    if(time.getTotalMinutes() % 15 != 0) throw new Error("Time must be divisible by 15");
-
-    this.insertEvent(dayEvent,( time.getTotalMinutes() - this.#startTime.getTotalMinutes()) / 15)
+    this.insertEvent(
+      dayEvent,
+      (time.getTotalMinutes() - this.#startTime.getTotalMinutes()) / 15,
+    );
   }
 
   calculateStartTime(index: number): TimeValue {
-    return this.#dragables.slice(0,index).reduce((acc, dragable) => {
-      return TimeValue.add(acc, dragable.getDuration())
-    }, this.#startTime)
+    return this.#dragables.slice(0, index).reduce((acc, dragable) => {
+      return TimeValue.add(acc, dragable.getDuration());
+    }, this.#startTime);
   }
 
   override removeEvent(index: number) {

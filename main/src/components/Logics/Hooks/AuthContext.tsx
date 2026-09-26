@@ -1,6 +1,6 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, type ReactNode, useContext, useState } from "react";
 import useToken from "!/api/hooks/useToken.ts";
-import { Credentials, loginUser } from "!/api/router.ts";
+import { type Credentials, loginUser } from "!/api/router.ts";
 
 const AuthContext = createContext<DragContextType | null>(null);
 

@@ -1,9 +1,8 @@
 import { createContext, useContext, useState } from "react";
-import { Color } from "!/domain/model/enums/Color.ts";
+import { type Color } from "!/domain/model/enums/Color.ts";
 import { DayEvent } from "!/domain/model/DayEvent.ts";
 import { EVENT_CONTAINER_NAMES } from "!/data/globalData.ts";
 import { RenderedContainer } from "!/domain/model/RenderedContainer.ts";
-import { RenderType } from "!/domain/model/enums/RenderType.ts";
 import { TimeValue } from "!/domain/model/TimeValue.ts";
 import { RenderedBarContainer } from "!/domain/model/RenderedBarContainer.ts";
 

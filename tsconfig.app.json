@@ -30,5 +30,5 @@
       "!/*": ["./main/src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["main/src"]
 }

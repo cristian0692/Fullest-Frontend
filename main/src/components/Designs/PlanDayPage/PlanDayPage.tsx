@@ -16,7 +16,7 @@ const PlanDayPage = () => {
   const [step, setStep] = useState(1);
   const { setBarWidth } = useEventWidth();
   const { wakeTime, sleepTime } = useTime();
-  const { eventContainers, dayEvents } = useEvent();
+  const { eventContainers } = useEvent();
   const [redirecting, setRedirecting] = useState(true);
   const bubbleRef = useRef<HTMLDivElement>(null);
   const duration = 1500;

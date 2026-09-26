@@ -1,4 +1,4 @@
-import { Color } from "!/domain/model/enums/Color.ts";
+import { type Color } from "!/domain/model/enums/Color.ts";
 import { DragDayEvent } from "!/domain/model/dragables/DragDayEvent.ts";
 import { TimeValue } from "!/domain/model/TimeValue.ts";
 
@@ -86,5 +86,4 @@ export class DayEvent {
   #color: Color;
   #duration: TimeValue;
   #startTime?: TimeValue;
-  #segment?: number; //position on bar of the event if placed
 }

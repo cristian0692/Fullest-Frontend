@@ -45,7 +45,8 @@ export class RenderedContainer extends DayEventContainer {
     return this.events.map((event) => event.toDragDayEvent());
   }
 
-  toEventIndex(index: number): number {
+  toEventIndex(_index: number): number {
+
     throw new Error("toEventIndex method should be implemented in subclasses");
   }
 

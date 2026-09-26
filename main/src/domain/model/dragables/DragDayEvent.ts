@@ -1,4 +1,4 @@
-import { Color } from "!/domain/model/enums/Color.ts";
+import { type Color } from "!/domain/model/enums/Color.ts";
 import { Dragable } from "!/domain/model/dragables/Dragable.ts";
 import { TimeValue } from "!/domain/model/TimeValue.ts";
 
@@ -16,7 +16,17 @@ export class DragDayEvent extends Dragable {
     this.#startingTime = startingTime;
   }
 
+  getTitle(){
+    return this.#title;
+  }
 
+  getColor(){
+    return this.#color;
+  }
+
+  getStartingTime(){
+    return this.#startingTime;
+  }
   #title: string;
   #color: string;
   #startingTime: Date | undefined;

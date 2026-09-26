@@ -1,4 +1,3 @@
-import { time } from "node:console";
 
 export class TimeValue {
   constructor(minutes: number, hours?: number) {

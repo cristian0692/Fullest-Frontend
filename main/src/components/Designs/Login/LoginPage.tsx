@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/Logics/Hooks/AuthContext.tsx";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const LoginPage = () => {
   const { login } = useAuth();
@@ -22,7 +22,7 @@ export const LoginPage = () => {
         throw new Error("Password cant be null");
       }
 
-      await login({ username, password });
+      await login({ email: username, password });
       navigate("/new-calendar");
     } catch (err) {
       if (err instanceof Error) {

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { TimeProvider } from "./TimeProvider.tsx";
 import { EventProvider } from "./EventProvider.tsx";
 import { DragProvider } from "./DragProvider.tsx";
